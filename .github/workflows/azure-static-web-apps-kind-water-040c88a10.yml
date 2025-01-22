@@ -15,6 +15,14 @@ jobs:
     runs-on: ubuntu-22.04
     name: Build and Deploy Job
     steps:
+      - name: Set User Configurations
+        run: |
+          git config --global user.name "Kristian Martin Tvenning"
+          git config --global user.email "km.tvenning@protonmail.com"
+          chmod -R 777 . # Change permissions as neccessary
+      - name: Disable CI
+        run: echo "CI=false" >> $GITHUB_ENV
+    
       - uses: actions/checkout@v3
         with:
           submodules: true
