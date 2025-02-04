@@ -22,6 +22,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import {AccountCircle, Logout} from "@mui/icons-material";
+import InfoIcon from '@mui/icons-material/Info';
 
 // import Statistics from './Statistics';
 // import Settings from './Settings';
@@ -123,6 +124,11 @@ const Header = () => {
                                 <SettingsIcon/>
                             </ListItemIcon>
                             <ListItemText primary="Settings" />
+                        </ListItem>
+                        <ListItem button onClick={() => navigate('TaskInfo')}>
+                            <ListItemIcon>
+                                <InfoIcon/>
+                            </ListItemIcon>
                         </ListItem>
                         <ListItem button onClick={() => navigate('Logout')}>
                             <ListItemIcon>

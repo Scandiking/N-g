@@ -19,7 +19,8 @@ import ThemeContextProvider from "./ThemeContext";
 import ThemeProvider from './ThemeProvider';
 
 // For UX appearing swifter and more responsive to user by adding visual responses in form of animations
-import { motion, AnimatePresence } from "framer-motion"; // Import Framer Motion
+import { motion, AnimatePresence } from "framer-motion";
+import TaskInfo from "./TaskInfo"; // Import Framer Motion
 
 
 /*
@@ -142,6 +143,7 @@ function AppContent() {
                 } />
 
                 {/* Routes (for sidebar) to take you to the components */}
+                <Route path="/taskinfo" element={<TaskInfo />} />
                 <Route path="/add-task" element={<AddTask />} />
                 <Route path="/add-people" element={<AddPeople />} />
                 <Route path="/add-room" element={<AddRoom />} />
