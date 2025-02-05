@@ -9,10 +9,12 @@ import AddRoom from "./AddRoom";
 import Statistics from "./Statistics";
 import Payments from "./Payments";
 import Settings from "./Settings";
+import Login from './Login';
 
 // Komponenter fra MUI framework
-import { Box, Grid, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
+import { Box, Grid, Container, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
 import FloatingActionButton from "./FloatingActionButton";
+import CardMedia from '@mui/material/CardMedia';
 
 // Lyst/mørkt tema, kontekst
 import ThemeContextProvider from "./ThemeContext";
@@ -21,6 +23,8 @@ import ThemeProvider from './ThemeProvider';
 // For UX appearing swifter and more responsive to user by adding visual responses in form of animations
 import { motion, AnimatePresence } from "framer-motion";
 import TaskInfo from "./TaskInfo"; // Import Framer Motion
+
+import bankkort1 from "./assets/Bankkort1.png";
 
 
 /*
@@ -70,8 +74,8 @@ function AppContent() {
                 <Route path="/" element={
 
 
-                        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                            <Box sx={{ maxWidth: '1200px', width: '100%' }}>
+                        <Container sx={{ p: 3 }}>
+
                                 <AnimatePresence>
                                     {tasks.length > 0 ? (
                                         <Grid container spacing={3}>
@@ -89,6 +93,13 @@ function AppContent() {
                                                                     {task.title}
                                                                 </Tooltip>
                                                             </Typography>
+
+                                                            <CardMedia
+                                                                component="img"
+                                                                sx={{height:140, backgroundColor:'grey'}}
+                                                                image={bankkort1}
+                                                                title="Picture"
+                                                            />
 
                                                             <Typography variant="body1" component="p" sx={{ mb: 2 }}>
                                                                 <Tooltip title="Utfyllende om oppgaven" placement="top" arrow>
@@ -134,11 +145,7 @@ function AppContent() {
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
-                            </Box>
-
-
-
-                    </Box>
+                    </Container>
 
                 } />
 
@@ -150,6 +157,7 @@ function AppContent() {
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/payments" element={<Payments />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/login" element={<Login />} />
             </Routes>
         </>
     );

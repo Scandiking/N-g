@@ -83,6 +83,8 @@ const AddTask = () => {
                     />
                 </Tooltip>
 
+                <Button variant="secondary">Legg til bilde</Button>
+
                 <Tooltip title="Lets user know about the task" placement="top" arrow>
                 <Button variant="contained" color="primary" onClick={handleAddTask}>
                     Add Task

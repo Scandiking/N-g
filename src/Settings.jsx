@@ -12,6 +12,7 @@ import {
     CardContent,
     Button,
     ButtonGroup,
+    Container,
     Slider,
 } from '@mui/material';
 import AutoModeIcon from '@mui/icons-material/AutoMode';
@@ -28,7 +29,7 @@ const Settings = () => {
 
     return (
         <div>
-            <Box sx={{ p: 3 }}>
+            <Container sx={{ p: 3 }}>
                 <Stack spacing={2}>
 
                     <Card
@@ -44,8 +45,8 @@ const Settings = () => {
                 <h2>Task settings</h2>
 
                             <FormGroup sx={{ mb: 2 }}>
-                                <FormControlLabel control={<Switch/>} label="Enable task creation regardless of role"/>
-                                <FormControlLabel control={<Switch/>} label="Enable task deletion regardless of role"/>
+                                <FormControlLabel control={<Switch/>} label="Make image proofs of completed tasks obligatory"/>
+                                <FormControlLabel control={<Switch/>} label="Prompt task assigner for validation of completed task"/>
                                 <FormControlLabel control={<Switch/>} label="Toggle punishment by each task"/>
                             </FormGroup>
 
@@ -66,9 +67,9 @@ const Settings = () => {
                         <CardContent>
                         <h2>People settings</h2>
                         <FormGroup sx={{ mb: 2 }}>
-                            <FormControlLabel control={<Switch/>} label="Enable kick votes"/>
-                            <FormControlLabel control={<Switch/>} label="Enable public shaming"/>
-                            <FormControlLabel control={<Switch/>} label="Enable public praise"/>
+                            <FormControlLabel control={<Switch/>} label="Show full name"/>
+                            <FormControlLabel control={<Switch/>} label="Require photo of face"/>
+                            <FormControlLabel control={<Switch/>} label="Let room admin assign privileges to individual users"/>
                         </FormGroup>
                         </CardContent>
                     </Card>
@@ -86,7 +87,7 @@ const Settings = () => {
                         <CardContent>
                         <h2>Room settings</h2>
                             <FormGroup sx={{ mb: 2 }}>
-                                <FormControlLabel control={<Switch/>} label="Enable room renaming"/>
+                                <FormControlLabel control={<Switch/>} label="Enable support for several moderators"/>
                                 <FormControlLabel control={<Switch/>} label="Enable assigning whole room to task"/>
                                 <FormControlLabel control={<Switch/>} label="Enable room temperature"/>
                             </FormGroup>
@@ -209,8 +210,38 @@ const Settings = () => {
                         </CardContent>
 
                     </Card>
+
+
+                    <Card
+                        sx={{
+                            display: 'flex',
+                            mb: 2,
+                            p: 2,
+                            borderRadius: 2,
+                            boxShadow: 3,
+                        }}
+                    >
+                        <CardContent>
+                            <h2>Privacy settings</h2>
+                            <FormGroup>
+                                <FormControlLabel control={<Switch/>} label="Enable P2P data handling"/>
+                                <FormControlLabel control={<Switch/>} label="Enable local network traffic only"/>
+                                <FormControlLabel control={<Switch/>} label="Sandbox app from global system (requires root privileges"/>
+                                <FormControlLabel control={<Switch/>} label="Enable AES-256 bit + cryptographic riddle unlock"/>
+                                <FormControlLabel control={<Switch/>} label="Require DNA Sample & Retina Scan for Unlock"/>
+                                <FormControlLabel control={<Switch/>} label="Enable blockchain-based decentralized multi-signature unlock"/>
+                                <FormControlLabel control={<Switch/>} label="Enable hardware key requirement"/>
+                            </FormGroup>
+
+                            <Button variant="contained">Button</Button>
+                        </CardContent>
+
+                    </Card>
+
+
+
                 </Stack>
-            </Box>
+            </Container>
         </div>
     );
 };

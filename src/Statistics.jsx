@@ -1,10 +1,10 @@
 import React from 'react';
-import { CardMedia, Card, CardContent, Box, Typography } from "@mui/material";
-import DonaldDuckImage from './DonaldDuck.png';
-import DaisyDuckImage from './DaisyDuck.png';
-import MickeyMouseImage from './MickeyMouse.png';
-import MinnieMouseImage from './MinnieMouse.png';
-import GoofyImage from './Goofy.png';
+import { CardMedia, Card, CardContent, Container, Typography } from "@mui/material";
+import DonaldDuckImage from './assets/DonaldDuck.png';
+import DaisyDuckImage from './assets/DaisyDuck.png';
+import MickeyMouseImage from './assets/MickeyMouse.png';
+import MinnieMouseImage from './assets/MinnieMouse.png';
+import GoofyImage from './assets/Goofy.png';
 
 const sampleStatistics = [
     {
@@ -41,7 +41,7 @@ const sampleStatistics = [
 
 function Statistics() {
     return (
-        <Box sx={{ p: 3 }}>
+        <Container sx={{ p: 3 }}>
             {sampleStatistics.map(stat => (
                 <Card
                     key={stat.id}
@@ -77,7 +77,7 @@ function Statistics() {
                     </CardContent>
                 </Card>
             ))}
-        </Box>
+        </Container>
     );
 }
 
