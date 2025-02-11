@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
+import Badge from '@mui/material/Badge';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -170,6 +171,8 @@ const Header = () => {
                         <ListItemText primary="Home"/>
                     </ListItem>
 
+                    <Divider/>
+
                     <ListItem
                         // Legg til oppgave
                         button
@@ -179,8 +182,14 @@ const Header = () => {
                             console.log('Add Task Modal open', isAddTaskModalOpen);
                         }}
                     >
+
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <TaskIcon />
+                            </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add tasks" />
                     </ListItem>
@@ -193,7 +202,12 @@ const Header = () => {
                         }}
                     >
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <PeopleIcon/>
+                                </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add people" />
                     </ListItem>
@@ -205,11 +219,43 @@ const Header = () => {
                             toggleAddRoomsModal(true);
                         }}
                         >
+
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <RoomIcon/>
+                                </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add room"/>
                     </ListItem>
+
+                    <Divider/>
+
+                    {/* TASKS */}
+                    <ListItem>
+                        <ListItemIcon>
+                                <TaskIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My tasks" />
+                    </ListItem>
+                    {/* PEOPLE */}
+                    <ListItem>
+                        <ListItemIcon>
+                            <PeopleIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My people" />
+                    </ListItem>
+                    {/* ROOMS */}
+                    <ListItem>
+                        <ListItemIcon>
+                            <RoomIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My rooms" />
+                    </ListItem>
+
+                    <Divider/>
 
                     <ListItem
                         // Statistikk

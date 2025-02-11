@@ -17,7 +17,7 @@ const AvatarPopover = () => {
     const handleLogout = () => {
         // Perform logout actions (e.g. clear authentication data)
         setAnchorEl(null); // Close the popover
-        navigate("/login"); // Redirect to login
+        navigate("/Login"); // Redirect to login
     };
 
     const open = Boolean(anchorEl);

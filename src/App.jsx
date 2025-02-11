@@ -10,6 +10,7 @@ import Statistics from "./Statistics";
 import Payments from "./Payments";
 import Settings from "./Settings";
 import Login from './Login';
+import Register from './Register';
 
 // Komponenter fra MUI framework
 import { Box, Grid, Container, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
@@ -158,6 +159,7 @@ function AppContent() {
                 <Route path="/payments" element={<Payments />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
         </>
     );
