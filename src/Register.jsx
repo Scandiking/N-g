@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Card, CardContent, CardMedia, Container, Stack, Typography, TextField, Tooltip, Button } from "@mui/material";
-import Naglogo from "./assets/Nag-logo.png";
+import Naglogo from "./assets/Naeg-logo-letters.png";
 
 function Register() {
     return (
@@ -13,16 +13,16 @@ function Register() {
                     sx={{
                         width: 100,
                         height: 100,
-                        objectFit: "cover",
+                        objectFit: "contain",
                         borderRadius: 1,
                         m: 1
                     }}
                     image={Naglogo}
-                    title="Nag logo"
+                    title="Næg logo"
                 />
                 </Box>
                 <CardContent>
-                    <Typography variant="h3">
+                    <Typography variant="h3" >
                         {"Create a new Næg account"}
                     </Typography>
                     <Stack spacing={2}>

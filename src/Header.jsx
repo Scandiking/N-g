@@ -24,6 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import {AccountCircle, Logout} from "@mui/icons-material";
 import InfoIcon from '@mui/icons-material/Info';
+import Naglogo from './assets/Naeg-logo-2.png'
 
 // import Statistics from './Statistics';
 // import Settings from './Settings';
@@ -79,15 +80,18 @@ const Header = () => {
                     <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Næg
-                    </Typography>
+
+                    <img
+                        src={Naglogo}
+                        alt="trk"
+                        style={{ height: 40 }}
+                    />
                     {/* Avatar with popover */}
                     <Avatar
-                        alt="Kristian Martin Tvenning"
+                        alt="Fornavn Etternavn"
                         src="https://th.bing.com/th/id/R.3d3fb5d7fd683782784cb712de8d8c71?rik=eWBkaFbes%2fMRDQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fsmiley-face-png-transparent%2fsmiley-face-png-transparent-21.png&ehk=iSLreF%2fX7uU5Her%2fa5Z4Nej%2baPAjy2i5OR23iEGjOSY%3d&risl=&pid=ImgRaw&r=0"
                         onClick={handleAvatarClick}
-                        sx={{cursor: 'pointer' }}
+                        sx={{cursor: 'pointer', marginLeft:"auto" }}
                         />
                 </Toolbar>
             </AppBar>
@@ -105,7 +109,7 @@ const Header = () => {
                 <Box sx={{ padding: '10px', width: '250px' }}>
                     { /* USER INFO*/ }
                     <Typography variant="subtitle1" fontweight="bold">
-                        Kristian Martin Tvenning
+                        Fornavn Etternavn
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                         name_surname@example.com
@@ -131,7 +135,7 @@ const Header = () => {
                                 <InfoIcon/>
                             </ListItemIcon>
                         </ListItem>
-                        <ListItem button onClick={() => navigate('Logout')}>
+                        <ListItem button onClick={() => navigate('Login')}>
                             <ListItemIcon>
                                 <Logout/>
                             </ListItemIcon>
