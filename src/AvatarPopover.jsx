@@ -56,6 +56,7 @@ const AvatarPopover = () => {
                     <Typography variant="body2" color="textSecondary">
                         user@example.com
                     </Typography>
+
                     <Divider style={{ margin: "8px 0" }} />
 
                     {/* Options List */}
@@ -63,12 +64,15 @@ const AvatarPopover = () => {
                         <ListItem button>
                             <ListItemText primary="My Account" />
                         </ListItem>
+
                         <ListItem button>
                             <ListItemText primary="Settings" />
                         </ListItem>
+
                         <ListItem button onClick={handleLogout}> {/*Logout click handler*/}
                             <ListItemText primary="Log out" />
                         </ListItem>
+
                     </List>
                 </div>
             </Popover>
