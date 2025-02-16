@@ -24,7 +24,7 @@ const UsersInRooms = [
 ]
 
 function MyRooms() {
-    const [rooms, setRooms] = useState(sampleRooms);
+    const [rooms] = useState(sampleRooms);
 
     return (
         <Container sx={{ mt: 4, p: 3 }}>

@@ -19,8 +19,6 @@ function PictureProofToggle({ requireProof, setRequireProof }) {
     );
 }
 
-
-{/* LAR DEG LEGGE TIL OPPGAVER */}
 const AddTask = ({ open, onClose }) => {
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDescription, setTaskDescription] = useState('');

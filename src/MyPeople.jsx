@@ -15,7 +15,7 @@ const samplePeople = [
 ];
 
 function MyPeople() {
-    const [people, setPeople] = useState(samplePeople);
+    const [people] = useState(samplePeople);
 
     return (
         <Container sx={{ mt: 4 }}>
