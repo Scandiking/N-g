@@ -6,7 +6,7 @@ import Naglogo from "./assets/Naeg-logo-letters.png";
 
 function Register() {
     return (
-        <Container sx={{ p: 3}}>
+        <Container sx={{ p: 10, display:"flex", justifyContent:"center", width: '100%' }}>
             <Card>
                 <Box sx={{p:2, display:"flex", justifyContent:"center", width:'100%'}}>
                 <CardMedia
@@ -22,7 +22,7 @@ function Register() {
                 />
                 </Box>
                 <CardContent>
-                    <Typography variant="h3" >
+                    <Typography variant="h3" sx={{ flexGrow: 1, p: 2 }} >
                         {"Create a new Næg account"}
                     </Typography>
                     <Stack spacing={2}>

@@ -4,6 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CardMedia from '@mui/material/CardMedia';
+import Tooltip from '@mui/material/Tooltip';
 import { useState } from "react";
 
 const samplePeople = [
@@ -18,7 +19,10 @@ function MyPeople() {
     const [people] = useState(samplePeople);
 
     return (
-        <Container sx={{ mt: 4 }}>
+        <Container sx={{ mt: 4, p: 3 }}>
+            <Tooltip title="The people found in the rooms you participate in" placement="top-start" arrow>
+            <Typography variant="h5" sx={{ flexGrow: 1, p: 2 }}>My persons</Typography>
+            </Tooltip>
             <Grid container spacing={3}>
                 {people.map((person) => (
                     <Grid item xs={12} sm={6} md={4} key={person.id}>
