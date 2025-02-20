@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Card, CardMedia, Typography, Button } from "@mui/material";
-import Bankkort1 from "./Bankkort1.png"
-import Bankkort2 from "./Bankkort2.png"
-import Bankkort3 from "./Bankkort3.png"
-import Bankkort4 from "./Bankkort4.png"
+import { Box, Card, CardMedia, Container, Typography, Button } from "@mui/material";
+import Bankkort1 from "./assets/Bankkort1.png"
+import Bankkort2 from "./assets/Bankkort2.png"
+import Bankkort3 from "./assets/Bankkort3.png"
+import Bankkort4 from "./assets/Bankkort4.png"
 
 const ExampleCards = [
     {
@@ -39,7 +39,7 @@ const ExampleCards = [
 function Payments() {
     return (
         <div>
-            <Box sx={{ p: 3 }}>
+            <Container sx={{ p: 3 }}>
                 {/* Card 1: Add/Delete/Modify Card Actions */}
                 <Card
                     sx={{
@@ -121,7 +121,7 @@ function Payments() {
                         </Box>
                     </Card>
                 ))}
-            </Box>
+            </Container>
         </div>
     );
 }

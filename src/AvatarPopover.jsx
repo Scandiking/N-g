@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Popover, Typography, List, ListItem, ListItemText, Divider } from "@mui/material";
 
 const AvatarPopover = () => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const navigate = useNavigate();
 
     const handleAvatarClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -10,6 +12,12 @@ const AvatarPopover = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        // Perform logout actions (e.g. clear authentication data)
+        setAnchorEl(null); // Close the popover
+        navigate("/Login"); // Redirect to login
     };
 
     const open = Boolean(anchorEl);
@@ -48,6 +56,7 @@ const AvatarPopover = () => {
                     <Typography variant="body2" color="textSecondary">
                         user@example.com
                     </Typography>
+
                     <Divider style={{ margin: "8px 0" }} />
 
                     {/* Options List */}
@@ -55,12 +64,15 @@ const AvatarPopover = () => {
                         <ListItem button>
                             <ListItemText primary="My Account" />
                         </ListItem>
+
                         <ListItem button>
                             <ListItemText primary="Settings" />
                         </ListItem>
-                        <ListItem button>
-                            <ListItemText primary="Logout" />
+
+                        <ListItem button onClick={handleLogout}> {/*Logout click handler*/}
+                            <ListItemText primary="Log out" />
                         </ListItem>
+
                     </List>
                 </div>
             </Popover>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
+import Badge from '@mui/material/Badge';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -10,7 +11,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
-import AddTask from './AddTask';
 import AddPeople from './AddPeople';
 import AddRoom from './AddRoom';
 import {Avatar, Divider, ListItemIcon, Popover, SwipeableDrawer} from "@mui/material";
@@ -22,42 +22,21 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import {AccountCircle, Logout} from "@mui/icons-material";
-import InfoIcon from '@mui/icons-material/Info';
+import Naglogo from './assets/Naeg-logo-2.png'
 
-// import Statistics from './Statistics';
-// import Settings from './Settings';
-
-const Header = () => {
+const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
-    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
     const [isAddPeopleModalOpen, setIsAddPeopleModalOpen] = useState(false);
     const [isAddRoomsModalOpen, setIsAddRoomsModalOpen] = useState(false);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const navigate = useNavigate();
-
-    // Function to toggle the drawer state
-    const toggleDrawer = (open) => (event) => {
-        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
-        }
-        setIsDrawerOpen(open);
-    };
-
-    // Popover handlers
-    const handleAvatarClick = (event) => {
-        setPopoverAnchorEl(event.currentTarget);
-    };
 
     const handlePopoverClose = () => {
         setPopoverAnchorEl(null);
     };
 
     const isPopoverOpen = Boolean(popoverAnchorEl);
-
-    const toggleAddTaskModal = (open) => {
-        setIsAddTaskModalOpen(open);
-    };
 
     const toggleAddPeopleModal = (open) => {
         setIsAddPeopleModalOpen(open);
@@ -75,18 +54,18 @@ const Header = () => {
         <>
             <AppBar position="fixed">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setIsDrawerOpen(true)}>
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Næg
-                    </Typography>
+
+                    <img src={Naglogo} alt="trk" style={{ height: 40 }}/>
+
                     {/* Avatar with popover */}
                     <Avatar
-                        alt="Kristian Martin Tvenning"
+                        alt="Fornavn Etternavn"
                         src="https://th.bing.com/th/id/R.3d3fb5d7fd683782784cb712de8d8c71?rik=eWBkaFbes%2fMRDQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fsmiley-face-png-transparent%2fsmiley-face-png-transparent-21.png&ehk=iSLreF%2fX7uU5Her%2fa5Z4Nej%2baPAjy2i5OR23iEGjOSY%3d&risl=&pid=ImgRaw&r=0"
-                        onClick={handleAvatarClick}
-                        sx={{cursor: 'pointer' }}
+                        onClick={(event) => setPopoverAnchorEl(event.currentTarget)}
+                        sx={{cursor: 'pointer', marginLeft:"auto" }}
                         />
                 </Toolbar>
             </AppBar>
@@ -104,7 +83,7 @@ const Header = () => {
                 <Box sx={{ padding: '10px', width: '250px' }}>
                     { /* USER INFO*/ }
                     <Typography variant="subtitle1" fontweight="bold">
-                        Kristian Martin Tvenning
+                        Fornavn Etternavn
                     </Typography>
                     <Typography variant="body2" color="textSecondary">
                         name_surname@example.com
@@ -125,12 +104,7 @@ const Header = () => {
                             </ListItemIcon>
                             <ListItemText primary="Settings" />
                         </ListItem>
-                        <ListItem button onClick={() => navigate('TaskInfo')}>
-                            <ListItemIcon>
-                                <InfoIcon/>
-                            </ListItemIcon>
-                        </ListItem>
-                        <ListItem button onClick={() => navigate('Logout')}>
+                        <ListItem button onClick={() => navigate('Login')}>
                             <ListItemIcon>
                                 <Logout/>
                             </ListItemIcon>
@@ -153,34 +127,42 @@ const Header = () => {
                 swipeAreaWidth={10}
                 anchor="left"
                 open={isDrawerOpen}
-                onClose={toggleDrawer(false)}>
+                onClose={() => setIsDrawerOpen(false)}
+                >
 
                 {/* I sideskuffen er det en liste med valg*/}
                 <List>
                     <ListItem
                         button
-                        onClick = {() => {
+                        onClick={() => {
                             setIsDrawerOpen(false);
-                            navigate("/");
-                        }}
-                        >
+                            navigate('/');
+                        }}>
+
                         <ListItemIcon>
                             <HomeIcon />
                         </ListItemIcon>
                         <ListItemText primary="Home"/>
                     </ListItem>
 
+                    <Divider/>
+
                     <ListItem
                         // Legg til oppgave
                         button
                         onClick={() => {
                             setIsDrawerOpen(false);
-                            toggleAddTaskModal(true);
-                            console.log('Add Task Modal open', isAddTaskModalOpen);
+                            onAddTask();
                         }}
                     >
+
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <TaskIcon />
+                            </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add tasks" />
                     </ListItem>
@@ -193,7 +175,12 @@ const Header = () => {
                         }}
                     >
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <PeopleIcon/>
+                                </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add people" />
                     </ListItem>
@@ -205,11 +192,59 @@ const Header = () => {
                             toggleAddRoomsModal(true);
                         }}
                         >
+
                         <ListItemIcon>
+                            <Badge
+                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                badgeContent={"+"}
+                            >
                             <RoomIcon/>
+                                </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Add room"/>
                     </ListItem>
+
+                    <Divider/>
+
+                    {/* TASKS */}
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/MyTasks');
+                        }}>
+
+                        <ListItemIcon>
+                                <TaskIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My tasks" />
+                    </ListItem>
+                    {/* PEOPLE */}
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/MyPeople');
+                        }}>
+                        <ListItemIcon>
+                            <PeopleIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My people" />
+                    </ListItem>
+                    {/* ROOMS */}
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/MyRooms');
+                        }}>
+                        <ListItemIcon>
+                            <RoomIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="My rooms"/>
+                    </ListItem>
+
+                    <Divider/>
 
                     <ListItem
                         // Statistikk
@@ -259,30 +294,6 @@ const Header = () => {
 
                 </List>
             </SwipeableDrawer>
-
-
-            { /* MODAL-VALG */}
-            { /* Legg til oppgave */}
-            <Modal
-                open={isAddTaskModalOpen}
-                onClose={() => toggleAddTaskModal(false)}
-                aria-labelledby="add-task-modal"
-                aria-describedby="add-task-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        p: 4,
-                        borderRadius: 8
-                    }}
-                >
-                    <AddTask />
-                </Box>
-            </Modal>
 
             <Modal
                 // Legg til folk

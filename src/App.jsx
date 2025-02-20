@@ -1,18 +1,26 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
+
 
 // Import av egne komponenter
 import Header from './Header';
 import AddTask from './AddTask';
 import AddPeople from "./AddPeople";
 import AddRoom from "./AddRoom";
+import MyTasks from "./MyTasks";
+import MyPeople from "./MyPeople";
+import MyRooms from "./MyRooms";
 import Statistics from "./Statistics";
 import Payments from "./Payments";
 import Settings from "./Settings";
+import Login from './Login';
+import Register from './Register';
 
 // Komponenter fra MUI framework
-import { Box, Grid, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
+import { Grid, Container, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
 import FloatingActionButton from "./FloatingActionButton";
+import CardMedia from '@mui/material/CardMedia';
 
 // Lyst/mørkt tema, kontekst
 import ThemeContextProvider from "./ThemeContext";
@@ -20,7 +28,8 @@ import ThemeProvider from './ThemeProvider';
 
 // For UX appearing swifter and more responsive to user by adding visual responses in form of animations
 import { motion, AnimatePresence } from "framer-motion";
-import TaskInfo from "./TaskInfo"; // Import Framer Motion
+
+import bankkort1 from "./assets/Bankkort1.png";
 
 
 /*
@@ -58,21 +67,29 @@ const sampleTasks = [
 function AppContent() {
     const location = useLocation();
     const [tasks, setTasks] = useState(sampleTasks);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleComplete = (id) => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     };
 
+
+
     return (
         <>
-            {/* Render the FAB only on specific routes if needed */}
-            {location.pathname !== '/settings' && <FloatingActionButton />}
+            {/* floating action button triggers modal */}
+            {location.pathname !== '/settings' && (
+                <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
+            )}
+
+            {/*AddTask Modal (now managed globally) */}
+            <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
             <Routes>
                 <Route path="/" element={
 
 
-                        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                            <Box sx={{ maxWidth: '1200px', width: '100%' }}>
+                        <Container sx={{ p: 3 }}>
+
                                 <AnimatePresence>
                                     {tasks.length > 0 ? (
                                         <Grid container spacing={3}>
@@ -90,6 +107,13 @@ function AppContent() {
                                                                     {task.title}
                                                                 </Tooltip>
                                                             </Typography>
+
+                                                            <CardMedia
+                                                                component="img"
+                                                                sx={{height:140, backgroundColor:'grey'}}
+                                                                image={bankkort1}
+                                                                title="Picture"
+                                                            />
 
                                                             <Typography variant="body1" component="p" sx={{ mb: 2 }}>
                                                                 <Tooltip title="Utfyllende om oppgaven" placement="top" arrow>
@@ -135,34 +159,40 @@ function AppContent() {
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
-                            </Box>
-
-
-
-                    </Box>
+                    </Container>
 
                 } />
 
                 {/* Routes (for sidebar) to take you to the components */}
-                <Route path="/taskinfo" element={<TaskInfo />} />
-                <Route path="/add-task" element={<AddTask />} />
+                <Route path="/add-task" element={<Navigate to="/" />} />
                 <Route path="/add-people" element={<AddPeople />} />
                 <Route path="/add-room" element={<AddRoom />} />
+                <Route path="/mypeople" element={<MyPeople />} />
+                <Route path="/myrooms" element={<MyRooms />} />
+                <Route path="/mytasks" element={<MyTasks />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/payments" element={<Payments />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
             </Routes>
         </>
     );
 }
 
 function App() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
         <ThemeContextProvider> {/* Provides theme state (light/dark/auto) */}
             <ThemeProvider> {/* Applies Material UI theme based on theme context */}
                 <BrowserRouter>
-                    <Header />
-                    <AppContent />
+                    <Header onAddTask={() => setIsModalOpen(true)} />
+                    <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
+
+                    <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+                    <AppContent isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+
                 </BrowserRouter>
             </ThemeProvider>
         </ThemeContextProvider>
