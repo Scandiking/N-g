@@ -30,6 +30,7 @@ import ThemeProvider from './ThemeProvider';
 import { motion, AnimatePresence } from "framer-motion";
 
 import bankkort1 from "./assets/Bankkort1.png";
+import Home from "./Home";
 
 
 /*
@@ -175,6 +176,7 @@ function AppContent() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/home" element={<Home />} />
             </Routes>
         </>
     );
