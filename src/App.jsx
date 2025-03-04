@@ -35,6 +35,7 @@ import bankkort1 from "./assets/Bankkort1.png";
 /*
 sampleTasks er listen med eksempeloppgaver du ser på landingssiden.
  */
+//Test fra Mia
 const sampleTasks = [
     {
         id: 1,
