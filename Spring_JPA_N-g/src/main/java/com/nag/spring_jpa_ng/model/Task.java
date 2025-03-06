@@ -9,7 +9,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name = "task_id")
     private int taskId;
@@ -45,10 +45,15 @@ public class Task {
         this.creator = creator;
         this.completed = completed;
     }
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public long getId() {
+        return id;
+    }
 
-    public Int getTaskId() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public int getTaskId() {
         return taskId;
     }
 
@@ -72,7 +77,7 @@ public class Task {
         return creator;
     }
 
-    public Bool getCompleted() {
+    public Boolean getCompleted() {
         return completed;
     }
 
