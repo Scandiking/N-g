@@ -18,10 +18,10 @@ public class Notification_frequency {
     private String notiFreqTitle;
 
     @Column(name = "base_interval")
-    private long baseInterval;
+    private double baseInterval;
 
     @Column(name = "growth_factor")
-    private long growthFactor;
+    private double growthFactor;
 
     @Column(name = "max_repeats")
     private int maxRepeats;
