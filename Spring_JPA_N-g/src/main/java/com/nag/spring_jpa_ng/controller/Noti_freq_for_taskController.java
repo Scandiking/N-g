@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 
-// Claimed by Jonas
+// Claimed by Jonas.
 public class Noti_freq_for_taskController {
 
     @Autowired
