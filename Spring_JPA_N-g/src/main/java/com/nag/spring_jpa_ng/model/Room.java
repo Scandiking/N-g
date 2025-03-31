@@ -2,6 +2,7 @@ package com.nag.spring_jpa_ng.model;
 
 import jakarta.persistence.*;
 
+// Endret variabel navn til camelCase
 
 @Entity
 @Table(name = "room")
@@ -14,61 +15,84 @@ public class Room {
     private long id;
 
     @Column(name="room_id")
-    private int room_id;
+    private int roomId;
 
     @Column(name="room_name")
-    private String room_name;
+    private String roomName;
 
     @Column(name="room_descr")
-    private String room_descr;
+    private String roomDescr;
 
     @Column(name="room_admin")
-    private String room_admin;
+    private String roomAdmin;
+
 
     @Column(name="room_picture")
-    private byte room_picture;
+    private byte [] roomPicture;
 
 
     public Room() {
 
     }
 
-    public Room(int room_id, String room_name, String room_descr, String room_admin, byte room_picture) {
-        this.room_id = room_id;
-        this.room_name = room_name;
-        this.room_descr = room_descr;
-        this.room_admin = room_admin;
-        this.room_picture = room_picture;
+    public Room(int roomId, String roomName, String roomDescr, String roomAdmin, byte [] roomPicture) {
+        this.roomId = roomId;
+        this.roomName = roomName;
+        this.roomDescr = roomDescr;
+        this.roomAdmin = roomAdmin;
+        this.roomPicture = roomPicture;
     }
 
-    public long getId() {return id;}
+    public long getId() {
+        return id;
+    }
 
-    public int getRoom_id() {return room_id;}
+    public int getRoomId() {
+        return roomId;
+    }
 
-    public String getRoom_name() {return room_name;}
+    public String getRoomName() {
+        return roomName;
+    }
 
-    public String getRoom_descr() {return room_descr;}
+    public String getRoomDescr() {
+        return roomDescr;
+    }
 
-    public String getRoom_admin() {return room_admin;}
+    public String getRoomAdmin() {
+        return roomAdmin;
+    }
 
-    public byte getRoom_picture() {return room_picture;}
+    public byte getRoomPicture() {
+        return roomPicture;
+    }
 
-    public void setRoom_id(int room_id) {this.room_id = room_id;}
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
 
-    public void setRoom_name(String room_name) {this.room_name = room_name;}
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
+    }
 
-    public void setRoom_descr(String room_descr) {this.room_descr = room_descr;}
+    public void setRoomDescr(String roomDescr) {
+        this.roomDescr = roomDescr;
+    }
 
-    public void setRoom_admin(String room_admin) {this.room_admin = room_admin;}
+    public void setRoomAdmin(String roomAdmin) {
+        this.roomAdmin = roomAdmin;
+    }
 
-    public void setRoom_picture(byte room_picture) {this.room_picture = room_picture;}
+    public void setRoomPicture(byte [] roomPicture) {
+        this.roomPicture = roomPicture;
+    }
 
 
     @Override
 
     public String toString() {
-        return "Room [id=" + id + ", room_id=" + room_id + ", room_name=" + room_name + ", room_descr=" + room_descr
-                + ", room_admin=" + room_admin + ", room_picture=" + room_picture + "]";
+        return "Room [id=" + id + ", roomId=" + roomId + ", roomName=" + roomName + ", roomDescr=" + roomDescr
+                + ", roomAdmin=" + roomAdmin + ", roomPicture=" + roomPicture + "]";
     }
 
 }
