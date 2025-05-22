@@ -24,7 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import {AccountCircle, Logout} from "@mui/icons-material";
 import InfoIcon from '@mui/icons-material/Info';
-import Naglogo from './assets/Naeg-logo-2.png'
+import Naglogo from './assets/Nag-logo.png'
 
 // import Statistics from './Statistics';
 // import Settings from './Settings';

@@ -75,12 +75,12 @@ The tasks are done by the People added to a Room.. You add a `task` by clicking 
 </details>
 
 <details>
-  <summary>.exe</summary>
-  <h4>Instructions for .exe installation.</h4>
+  <summary>autorun.bat</summary>
+  <h4>Instructions for installing the application using the autorun.bat-file.</h4>
 <ol>
-  <li>Download the <code>.exe</code> from the sidebar to the right</li>
-<li>Double click it</li>
-<li>Select <code>yes</code> if asked for UAC</li>
+<li>Download the zip from the sidebar to the right</li>
+<li>Unzip the folder</li>
+<li>Click the <code>autorun.bat</code> file</li>
 <li>Click "Next" a bunch of times and agree to install subsidiary software so we get commissions and passive income</li>
 </ol>
 </details>
