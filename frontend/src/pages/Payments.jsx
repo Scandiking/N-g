@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Card, CardMedia, Container, Typography, Button } from "@mui/material";
-import Bankkort1 from "./assets/Bankkort1.png"
-import Bankkort2 from "./assets/Bankkort2.png"
-import Bankkort3 from "./assets/Bankkort3.png"
-import Bankkort4 from "./assets/Bankkort4.png"
+import Bankkort1 from "../assets/Bankkort1.png"
+import Bankkort2 from "../assets/Bankkort2.png"
+import Bankkort3 from "../assets/Bankkort3.png"
+import Bankkort4 from "../assets/Bankkort4.png"
 
 const ExampleCards = [
     {

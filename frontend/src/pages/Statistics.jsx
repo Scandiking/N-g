@@ -1,10 +1,10 @@
 import React from 'react';
 import { CardMedia, Card, CardContent, Container, Typography } from "@mui/material";
-import DonaldDuckImage from './assets/DonaldDuck.png';
-import DaisyDuckImage from './assets/DaisyDuck.png';
-import MickeyMouseImage from './assets/MickeyMouse.png';
-import MinnieMouseImage from './assets/MinnieMouse.png';
-import GoofyImage from './assets/Goofy.png';
+import DonaldDuckImage from '../assets/DonaldDuck.png';
+import DaisyDuckImage from '../assets/DaisyDuck.png';
+import MickeyMouseImage from '../assets/MickeyMouse.png';
+import MinnieMouseImage from '../assets/MinnieMouse.png';
+import GoofyImage from '../assets/Goofy.png';
 
 const sampleStatistics = [
     {

@@ -29,7 +29,6 @@ import ThemeProvider from './ThemeProvider';
 // For UX appearing swifter and more responsive to user by adding visual responses in form of animations
 import { motion, AnimatePresence } from "framer-motion";
 
-import bankkort1 from "./assets/Bankkort1.png";
 import Home from "./Home";
 
 

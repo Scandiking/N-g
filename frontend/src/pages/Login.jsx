@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card';
 import { Box, Container, Stack, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Naglogo from "./assets/Naeg-logo-2.png";
+import Naglogo from "../assets/Naeg-logo-2.png";
 
 const Login = () => {
     const navigate = useNavigate();
