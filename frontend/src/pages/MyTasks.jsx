@@ -30,7 +30,7 @@ function MyTasks() {
             <Grid container spacing={3}>
                 {tasks.map((task) => (
                     <Grid item xs={12} sm={6} md={4} key={task.id}>
-                        <Card sx={{ p: 2 }}>
+                        <Card sx={{ p: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Typography variant="h6">{task.title}</Typography>
                                 <Typography>{task.description}</Typography>

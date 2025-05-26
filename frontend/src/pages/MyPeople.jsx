@@ -26,7 +26,7 @@ function MyPeople() {
             <Grid container spacing={3}>
                 {people.map((person) => (
                     <Grid item xs={12} sm={6} md={4} key={person.id}>
-                        <Card sx={{ display: "flex", alignItems: "center", p: 2 }}>
+                        <Card sx={{ display: "flex", alignItems: "center", p: 2, boxShadow: 3 }}>
                             {/* Profile image */}
                             <CardMedia
                                 component="img"

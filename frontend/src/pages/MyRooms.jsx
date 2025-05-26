@@ -31,7 +31,7 @@ function MyRooms() {
             <Grid container spacing={3}>
                 {rooms.map((room) => (
                     <Grid item xs={12} sm={6} md={4} key={room.id}>
-                        <Card sx={{ p: 2}}>
+                        <Card sx={{ p: 2, boxShadow: 3}}>
                             <CardContent>
                                 <Typography variant="h6">{room.name}</Typography>
                                 <Typography color="text.secondary">

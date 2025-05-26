@@ -238,21 +238,41 @@ const Header = () => {
                     <Divider/>
 
                     {/* TASKS */}
-                    <ListItem>
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/mytasks');
+                        }}
+                    >
                         <ListItemIcon>
                                 <TaskIcon/>
                         </ListItemIcon>
                         <ListItemText primary="My tasks" />
                     </ListItem>
+
                     {/* PEOPLE */}
-                    <ListItem>
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/mypeople');
+                        }}
+                    >
                         <ListItemIcon>
                             <PeopleIcon/>
                         </ListItemIcon>
                         <ListItemText primary="My people" />
                     </ListItem>
+
                     {/* ROOMS */}
-                    <ListItem>
+                    <ListItem
+                        button
+                        onClick={() => {
+                            setIsDrawerOpen(false);
+                            navigate('/myrooms');
+                        }}
+                    >
                         <ListItemIcon>
                             <RoomIcon/>
                         </ListItemIcon>
