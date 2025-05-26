@@ -27,6 +27,8 @@ const AddTask = ({ open, onClose }) => {
     const [currentDate, setCurrentDate] = useState(null);
     const [currentTime, setCurrentTime] = useState(null);
     const [requireProof, setRequireProof] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState('');
+    const [selectedPerson, setSelectedPerson] = useState('');
 
     const handleAddCustomDate = () => {
         if (currentDate && currentTime) {
@@ -41,10 +43,53 @@ const AddTask = ({ open, onClose }) => {
         setCustomDates(customDates.filter(date => date !== dateToRemove))
     };
 
+const AssignTask = () => {
+    if (!taskTitle || !selectedPerson) {
+        alert('Please provide a task title and assign it to a person.');
+        return;
+    }
+
+    const task = {
+        title: taskTitle,
+        description: taskDescription,
+        notificationType,
+        customDates,
+        room: selectedRoom,
+        assignedTo: selectedPerson,
+        requireProof,
+    };
+
+    console.log('Task assigned:', task);
+
+    // Eksempel: send task to backend API
+    // fetch('/api/tasks', {
+    //    method: 'POST',
+    //    headers: { 'Content-Type': 'application/json' },
+    //    body: JSON.stringify(task),
+    // })
+    //    .then(response => response.json())
+    //    .then(data => console.log('Task saved:', data))
+    //   .catch(error => console.error('Error saving task:', error));
+
+    // Clear the form
+    setTaskTitle('');
+    setTaskDescription('');
+    setNotificationType('1');
+    setCustomDates([]);
+    setSelectedRoom('');
+    setSelectedPerson('');
+    setRequireProof(false);
+
+    onClose();
+};
+
     return (
+
       <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+
           <DialogTitle>Add a New Task</DialogTitle>
           <DialogContent>
+
               <Box component="form" sx={{ display:'flex', flexDirection: 'column', gap: 2}}>
                   <Tooltip placement="top" title="Adds a title to your task" arrow>
                       <TextField
@@ -143,7 +188,9 @@ const AddTask = ({ open, onClose }) => {
                   </Tooltip>
               </Box>
           </DialogContent>
+
       </Dialog>
+
     );
 };
 
