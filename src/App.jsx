@@ -111,8 +111,7 @@ function AppContent() {
 
                                                             <CardMedia
                                                                 component="img"
-                                                                sx={{height:140, backgroundColor:'grey'}}
-                                                                image={bankkort1}
+                                                                sx={{height:"100%", backgroundColor:"grey.200", borderRadius: 2, mb: 2}}
                                                                 title="Picture"
                                                             />
 

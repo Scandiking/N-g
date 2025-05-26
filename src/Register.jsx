@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Box, Card, CardContent, CardMedia, Container, Stack, Typography, TextField, Tooltip, Button } from "@mui/material";
-import Naglogo from "./assets/Naeg-logo-letters.png";
+import Naglogo from "./assets/Nag-logo.png";
 
 function Register() {
     return (

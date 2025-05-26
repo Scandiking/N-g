@@ -11,6 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
+import AddTask from './AddTask';
 import AddPeople from './AddPeople';
 import AddRoom from './AddRoom';
 import {Avatar, Divider, ListItemIcon, Popover, SwipeableDrawer} from "@mui/material";
@@ -22,21 +23,43 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import {AccountCircle, Logout} from "@mui/icons-material";
-import Naglogo from './assets/Naeg-logo-2.png'
+import InfoIcon from '@mui/icons-material/Info';
+import Naglogo from './assets/Nag-logo.png'
 
-const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
+// import Statistics from './Statistics';
+// import Settings from './Settings';
+
+const Header = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
+    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
     const [isAddPeopleModalOpen, setIsAddPeopleModalOpen] = useState(false);
     const [isAddRoomsModalOpen, setIsAddRoomsModalOpen] = useState(false);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const navigate = useNavigate();
+
+    // Function to toggle the drawer state
+    const toggleDrawer = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+        setIsDrawerOpen(open);
+    };
+
+    // Popover handlers
+    const handleAvatarClick = (event) => {
+        setPopoverAnchorEl(event.currentTarget);
+    };
 
     const handlePopoverClose = () => {
         setPopoverAnchorEl(null);
     };
 
     const isPopoverOpen = Boolean(popoverAnchorEl);
+
+    const toggleAddTaskModal = (open) => {
+        setIsAddTaskModalOpen(open);
+    };
 
     const toggleAddPeopleModal = (open) => {
         setIsAddPeopleModalOpen(open);
@@ -54,17 +77,20 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
         <>
             <AppBar position="fixed">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={() => setIsDrawerOpen(true)}>
+                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
 
-                    <img src={Naglogo} alt="trk" style={{ height: 40 }}/>
-
+                    <img
+                        src={Naglogo}
+                        alt="trk"
+                        style={{ height: 40 }}
+                    />
                     {/* Avatar with popover */}
                     <Avatar
                         alt="Fornavn Etternavn"
                         src="https://th.bing.com/th/id/R.3d3fb5d7fd683782784cb712de8d8c71?rik=eWBkaFbes%2fMRDQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fsmiley-face-png-transparent%2fsmiley-face-png-transparent-21.png&ehk=iSLreF%2fX7uU5Her%2fa5Z4Nej%2baPAjy2i5OR23iEGjOSY%3d&risl=&pid=ImgRaw&r=0"
-                        onClick={(event) => setPopoverAnchorEl(event.currentTarget)}
+                        onClick={handleAvatarClick}
                         sx={{cursor: 'pointer', marginLeft:"auto" }}
                         />
                 </Toolbar>
@@ -104,6 +130,11 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
                             </ListItemIcon>
                             <ListItemText primary="Settings" />
                         </ListItem>
+                        <ListItem button onClick={() => navigate('TaskInfo')}>
+                            <ListItemIcon>
+                                <InfoIcon/>
+                            </ListItemIcon>
+                        </ListItem>
                         <ListItem button onClick={() => navigate('Login')}>
                             <ListItemIcon>
                                 <Logout/>
@@ -127,18 +158,17 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
                 swipeAreaWidth={10}
                 anchor="left"
                 open={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-                >
+                onClose={toggleDrawer(false)}>
 
                 {/* I sideskuffen er det en liste med valg*/}
                 <List>
                     <ListItem
                         button
-                        onClick={() => {
+                        onClick = {() => {
                             setIsDrawerOpen(false);
-                            navigate('/');
-                        }}>
-
+                            navigate("/");
+                        }}
+                        >
                         <ListItemIcon>
                             <HomeIcon />
                         </ListItemIcon>
@@ -152,7 +182,8 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
                         button
                         onClick={() => {
                             setIsDrawerOpen(false);
-                            onAddTask();
+                            toggleAddTaskModal(true);
+                            console.log('Add Task Modal open', isAddTaskModalOpen);
                         }}
                     >
 
@@ -207,41 +238,25 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
                     <Divider/>
 
                     {/* TASKS */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/MyTasks');
-                        }}>
-
+                    <ListItem>
                         <ListItemIcon>
                                 <TaskIcon/>
                         </ListItemIcon>
                         <ListItemText primary="My tasks" />
                     </ListItem>
                     {/* PEOPLE */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/MyPeople');
-                        }}>
+                    <ListItem>
                         <ListItemIcon>
                             <PeopleIcon/>
                         </ListItemIcon>
                         <ListItemText primary="My people" />
                     </ListItem>
                     {/* ROOMS */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/MyRooms');
-                        }}>
+                    <ListItem>
                         <ListItemIcon>
                             <RoomIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="My rooms"/>
+                        <ListItemText primary="My rooms" />
                     </ListItem>
 
                     <Divider/>
@@ -294,6 +309,30 @@ const Header = ({ onAddTask }) => {  // 🔹 Receive `onAddTask` from `App.jsx`
 
                 </List>
             </SwipeableDrawer>
+
+
+            { /* MODAL-VALG */}
+            { /* Legg til oppgave */}
+            <Modal
+                open={isAddTaskModalOpen}
+                onClose={() => toggleAddTaskModal(false)}
+                aria-labelledby="add-task-modal"
+                aria-describedby="add-task-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        p: 4,
+                        borderRadius: 8
+                    }}
+                >
+                    <AddTask />
+                </Box>
+            </Modal>
 
             <Modal
                 // Legg til folk
