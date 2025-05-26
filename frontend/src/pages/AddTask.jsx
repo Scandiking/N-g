@@ -3,21 +3,6 @@ import { Box, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, R
 import { LocalizationProvider, DatePicker, TimeClock } from '@mui/x-date-pickers';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-/* Picture Proof Toggle Component */
-function PictureProofToggle({ requireProof, setRequireProof }) {
-    return (
-        <FormControlLabel
-            control={
-            <Switch
-                checked={requireProof}
-                onChange={(e) => setRequireProof(e.target.checked)}
-                color="primary"
-                />
-            }
-            label="Require picture proof of completed task"
-            />
-    );
-}
 
 const AddTask = ({ open, onClose }) => {
     const [taskTitle, setTaskTitle] = useState('');
@@ -174,12 +159,6 @@ const AssignTask = () => {
                       />
                   </Tooltip>
 
-                  {/* PICTURE PROOF TOGGLE */}
-                  <Box sx={{ mt: 2 }}>
-                      <PictureProofToggle requireProof={requireProof} setRequireProof={setRequireProof} />
-                  </Box>
-
-                  <Button variant="secondary">Add picture</Button>
 
                   <Tooltip title="Lets user know about the task" placement="top" arrow>
                       <Button variant="contained" color="primary" onClick={onClose}>
