@@ -33,15 +33,10 @@
   </ul>
 </details>
 
-
----
-
 ### <a id="what-is-næg"></a>What is Næg?
 
 Næg is an app that helps you get others to do what they should do.   
-How do you do that? You add `[Task]`s() to `[People]`() in a `[Room]`().
-
----
+How do you do that? You add `Task`s to `People` in a `Room`.
 
 ### <a id="how-to-add-tasks-to-people-in-a-room"></a>How to add tasks to people in a room
 
@@ -57,8 +52,6 @@ The people are the persons you want to do the `Task`s you add. While making task
 
 - __Tasks__  
 The tasks are done by the People added to a Room.. You add a `task` by clicking the `+` button in the lower right corner or by using the `Sidebar`. This is also where you will set the [næg frequency](#næg-frequency).
-
----
 
 ### How to install
 
@@ -85,8 +78,6 @@ The tasks are done by the People added to a Room.. You add a `task` by clicking 
 </ol>
 </details>
 
----
-
 ### Næg frequency
 #### Low
 - This notifies the assigned persons to do the task with typical intensity, much like a notification on Snapchat and Messenger.
@@ -99,40 +90,14 @@ The tasks are done by the People added to a Room.. You add a `task` by clicking 
 
 ---
 
-### Settings
-#### Task settings
-- Set standard task settings
-  - Make image proofs of completed tasks obligatory
-  - Prompt task assigner for validation of completed task
-  - 
+<p style="text-align:center; font-style:italic;">«Jeg er ikke bekymret for Gruppe 7»</p>
 
-#### People settings
-- Show full name / Show first name / Show username / Show nickname
-- 
 
-#### Room settings
-- Enable support for several moderators
+![The Norwegian flag](./gfx/Flag_of_Norwaypng.png)
 
-#### Theme settings
-- Auto
-  - Follows the theme of your system. If it is light, Næg will be light. If it is dark, Næg will be dark
-- Light
-  - Sets Næg to use a light theme regardless of context
-- Dark
-  - Sets næg to use a dark theme regardless of context
-- Pacific Punch
-  - A warm theme reminding of relaxing on the beach having a refresher
-- Arctic Atmosphere
-  - A cold theme leading to discussions about the habitats of penguins and polar bears
-- [ ] this
-- [ ] that
-- [x] something else
-- [x] something like this
----
 
-_«Jeg er ikke bekymret for Gruppe 7»_
 
-__MADE IN NORWAY__
+
 
 
 
