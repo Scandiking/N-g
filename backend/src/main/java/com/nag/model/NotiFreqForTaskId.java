@@ -15,7 +15,7 @@ import java.util.Objects;
  *    og overskrive #equals(Object) og #hashCode() for at JPA skal kunne bruke den riktig
  * </p>
  *
- * @author [Your name]
+ * @author Kenneth
  */
 @Getter
 @Setter
