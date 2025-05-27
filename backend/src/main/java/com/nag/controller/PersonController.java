@@ -1,10 +1,11 @@
 /**
- * RoomController.java
- * Controller for managing room-related operations.
- * This controller provides endpoints to retrieve, create, and delete rooms.
+ * PersonController.java
+ * Controller for managing person-related operations.
+ * This controller provides endpoints to retrieve, create, update, and delete persons.
  */
 
-package com.nag.controller;
+package main.java.com.nag.controller;
+
 import com.nag.model.Person;
 import com.nag.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,6 @@ public class PersonController {
                 .map(person -> new ResponseEntity<>(person, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-}
 
     /**
      * Creates a new person.
@@ -55,22 +55,6 @@ public class PersonController {
         Person savedPerson = personRepository.save(person);
         return new ResponseEntity<>(savedPerson, HttpStatus.CREATED);
     }
-
-    /**
-     * Deletes a person by their ID.
-     *
-     * @param id the ID of the person to delete
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
-        if (personRepository.existsById(id)) {
-            personRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-}
 
     /**
      * Updates a person.
@@ -89,7 +73,21 @@ public class PersonController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
+
+    /**
+     * Deletes a person by their ID.
+     *
+     * @param id the ID of the person to delete
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
+        if (personRepository.existsById(id)) {
+            personRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     /**
      * Checks if a person exists by their ID.
@@ -101,7 +99,6 @@ public class PersonController {
     public ResponseEntity<Boolean> personExists(@PathVariable Long id) {
         return new ResponseEntity<>(personRepository.existsById(id), HttpStatus.OK);
     }
-}
 
     /**
      * Retrieves a person by their email.
@@ -115,7 +112,6 @@ public class PersonController {
                 .map(person -> new ResponseEntity<>(person, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-}
 
     /**
      * Retrieves persons by their first name.
@@ -127,7 +123,6 @@ public class PersonController {
     public List<Person> getPersonsByFirstName(@PathVariable String firstName) {
         return personRepository.findByFirstName(firstName);
     }
-}
 
     /**
      * Retrieves persons by their last name.
@@ -139,7 +134,6 @@ public class PersonController {
     public List<Person> getPersonsByLastName(@PathVariable String lastName) {
         return personRepository.findByLastName(lastName);
     }
-}
 
     /**
      * Retrieves persons by their full name.
@@ -152,7 +146,6 @@ public class PersonController {
     public List<Person> getPersonsByFullName(@PathVariable String firstName, @PathVariable String lastName) {
         return personRepository.findByFirstNameAndLastName(firstName, lastName);
     }
-}
 
     /**
      * Retrieves persons by their phone number.

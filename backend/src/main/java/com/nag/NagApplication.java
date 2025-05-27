@@ -1,4 +1,4 @@
-package com.nag;
+package main.java.com.nag;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class NagApplication {
 
     public static void main(String[] args) {
-        NagApplication.run(NagApplication.class, args);
+        SpringApplication.run(NagApplication.class, args);
     }
 
 }
