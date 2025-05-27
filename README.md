@@ -1,42 +1,34 @@
 # Næg
+
 ![Naeg logo](./gfx/Nag-logo.ico)  
+
 ***Never Forget Again — We'll Make Sure Of It...***
 
----
+<!-- Table of Contents -->
 
 <details>
-  <summary>Table of Contents</summary>
-  <ul>
-    <li><a href="#what-is-næg">What is Næg?</a></li>
-    <a href="#how-to-add-tasks-to-people-in-a-room">How to add tasks to people in a space</a>
-      <ul>
-        <li><a href="__room__">Room</a></li>
-        <li><a href="#people">People</a></li>
-        <li><a href="#tasks">Tasks</a></li>
-      </ul>
-    </li>
-    <li>How to install  
-      <ul>
-        <li><a href="#cli-install">CLI</a></li>
-        <li><a href="#exe-install">.exe</a></li>
-      </ul>
-    </li>
-    <li><a href="#næg-frequency">Næg frequency</a></li>
-    <li>Settings
-      <ul>
-        <li><a href="#task-settings">Task settings</a></li>
-        <li><a href="#people-settings">People settings</a></li>
-        <li><a href="#room-settings">Room settings</a></li>
-        <li><a href="#theme-settings">Theme settings</a></li>
-      </ul>
-    </li>
-  </ul>
+
+<summary>
+Table of Contents
+</summary>
+
+<!-- TOC -->
+* [Næg](#næg)
+    * [<a id="what-is-næg"></a>What is Næg?](#a-idwhat-is-nægawhat-is-næg)
+    * [<a id="how-to-add-tasks-to-people-in-a-room"></a>How to add tasks to people in a room](#a-idhow-to-add-tasks-to-people-in-a-roomahow-to-add-tasks-to-people-in-a-room)
+    * [How to install](#how-to-install)
+    * [Næg frequency](#næg-frequency)
+      * [Low](#low)
+      * [Medium](#medium)
+      * [Næg special](#næg-special)
+      * [Custom](#custom)
+<!-- TOC -->
 </details>
 
 ### <a id="what-is-næg"></a>What is Næg?
 
 Næg is an app that helps you get others to do what they should do.   
-How do you do that? You add `Task`s to `People` in a `Room`.
+How do you do that? You add `Task`s to `People` in a `Room`. What sets Næg apart from other task managing apps is the ability to set a `Næg frequency` for each task. This means you can nag people to do their tasks with varying intensity, from a gentle reminder to an all-out bombardment of notifications. 
 
 ### <a id="how-to-add-tasks-to-people-in-a-room"></a>How to add tasks to people in a room
 
@@ -51,7 +43,7 @@ The people are the persons you want to do the `Task`s you add. While making task
 
 
 - __Tasks__  
-The tasks are done by the People added to a Room.. You add a `task` by clicking the `+` button in the lower right corner or by using the `Sidebar`. This is also where you will set the [næg frequency](#næg-frequency).
+The tasks are done by the People added to a Room. You add a `task` by clicking the `+` button in the lower right corner or by using the `Sidebar`. This is also where you will set the [næg frequency](#næg-frequency).
 
 ### How to install
 
@@ -60,7 +52,7 @@ The tasks are done by the People added to a Room.. You add a `task` by clicking 
   <h4>Instructions for CLI installation.</h4>
 <ol>
   <li>Open a Command window</li>
-  <li>Enter <code>github clone repository-url</code></li>
+  <li>Enter <code>github clone https://github.com/Scandiking/N-g</code></li>
   <li>Press enter to continue</li>
   <li>Enter <code>npm start</code> to start</li>
 </ol>
@@ -92,9 +84,11 @@ The tasks are done by the People added to a Room.. You add a `task` by clicking 
 
 <p style="text-align:center; font-style:italic;">«Jeg er ikke bekymret for Gruppe 7»</p>
 
+<div style="text-align:center;">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Flag_of_Norway.png/330px-Flag_of_Norway.png" alt="Flag of Norway" style="width:50%;">
+</div>  
 
-![The Norwegian flag](./gfx/Flag_of_Norwaypng.png)
-
+<p style="text-align:center;">Made with ❤️ by the students of <a href="https://www.usn.no/english/">Universitetet i Sørøst-Norge</a></p> 
 
 
 
