@@ -31,7 +31,7 @@ public class Person {
     @Lob // @Lob tells JPA this is a large object (BLOB for binary).
     @Basic(fetch = FetchType.LAZY) // avoids pulling the entire byte array until you actually call getProfileImage().
     @Column(name = "profilbilde", columnDefinition = "bytea")
-    private byte[] profileImage; // ensures PostgreSQL uses its bytea type..
+    private byte[] profileImage; // ensures PostgreSQL uses its bytea type...
 
 
     @Column(name = "fødselsdato", nullable = false)
