@@ -150,11 +150,11 @@ public class PersonController {
     /**
      * Retrieves persons by their phone number.
      *
-     * @param phoneNumber the phone number of the persons
+     * @param phoneNo the phone number of the persons
      * @return a list of persons with the specified phone number
      */
     @GetMapping("/phone/{phoneNumber}")
-    public List<Person> getPersonsByPhoneNumber(@PathVariable String phoneNumber) {
-        return personRepository.findByPhoneNumber(phoneNumber);
+    public List<Person> getPersonsByPhoneNumber(@PathVariable String phoneNo) {
+        return personRepository.findByPhoneNo(phoneNo);
     }
 }
