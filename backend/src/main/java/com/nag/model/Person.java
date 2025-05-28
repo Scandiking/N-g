@@ -26,7 +26,7 @@ public class Person {
 
     // maps to the "mail" column in the DB
     @Column(name = "mail", length = 50)
-    private String email;
+    private String mail;
 
     @Lob // @Lob tells JPA this is a large object (BLOB for binary).
     @Basic(fetch = FetchType.LAZY) // avoids pulling the entire byte array until you actually call getProfilePicture().
@@ -36,18 +36,19 @@ public class Person {
     @Column(name = "date_of_birth")
     private LocalDate birthDate;
 
-    public Person(String phoneNo, String firstName, String lastName, String email, byte[] profilePicture, LocalDate birthDate)
+    public Person(String phoneNo, String firstName, String lastName, String mail, byte[] profilePicture, LocalDate birthDate)
     {
         this.phoneNo       = phoneNo;
         this.firstName     = firstName;
         this.lastName      = lastName;
-        this.email         = email;
+        this.mail         = mail;
         this.profilePicture = profilePicture;
         this.birthDate     = birthDate;
     }
 
-    public Person(String phoneNo, String firstName, String lastName, String email)
+    public Person(String phoneNo, String firstName, String lastName, String mail)
+
     {
-        this(phoneNo, firstName, lastName, email, null, null);
+        this(phoneNo, firstName, lastName, mail, null, null);
     }
 }
