@@ -7,12 +7,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-/**
- * Entity class representing a person in the application.
- * This class stores information about persons who can be assigned tasks and belong to rooms.
- *
- * @author Kenneth
- */
 @Entity
 @Table(name = "person")
 @Getter
@@ -22,7 +16,7 @@ public class Person {
 
     @Id
     @Column(name = "phone_no", length = 15)
-    private String phoneNo; // PRIMARY KEY som String (telefonnummer)
+    private String phoneNo;
 
     @Column(name = "first_name", nullable = false, length = 20)
     private String firstName;
@@ -30,43 +24,30 @@ public class Person {
     @Column(name = "last_name", nullable = false, length = 25)
     private String lastName;
 
+    // maps to the "mail" column in the DB
     @Column(name = "mail", length = 50)
     private String email;
 
-    @Column(name = "profile_picture")
-    private byte[] profilePicture; // korresponderer med BYTEA i SQL
+    @Lob // @Lob tells JPA this is a large object (BLOB for binary).
+    @Basic(fetch = FetchType.LAZY) // avoids pulling the entire byte array until you actually call getProfilePicture().
+    @Column(name = "profile_picture", columnDefinition = "bytea")
+    private byte[] profilePicture; // ensures PostgreSQL uses its bytea type...
 
     @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    private LocalDate birthDate;
 
-    /**
-     * Constructor with all required fields
-     */
-    public Person(String phoneNo, String firstName, String lastName, String email, byte[] profilePicture, LocalDate dateOfBirth) {
-        this.phoneNo = phoneNo;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public Person(String phoneNo, String firstName, String lastName, String email, byte[] profilePicture, LocalDate birthDate)
+    {
+        this.phoneNo       = phoneNo;
+        this.firstName     = firstName;
+        this.lastName      = lastName;
+        this.email         = email;
         this.profilePicture = profilePicture;
-        this.dateOfBirth = dateOfBirth;
+        this.birthDate     = birthDate;
     }
 
-    /**
-     * Constructor with required fields only
-     */
-    public Person(String phoneNo, String firstName, String lastName) {
-        this.phoneNo = phoneNo;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    // Hibernate trenger en setId metode selv om vi bruker phoneNo som ID
-    public void setId(Long id) {
-        // Denne metoden trengs for compatibility med noen Spring operasjoner
-        // men vi bruker faktisk phoneNo som ID
-    }
-
-    public String getId() {
-        return phoneNo; // returnerer phoneNo som ID
+    public Person(String phoneNo, String firstName, String lastName, String email)
+    {
+        this(phoneNo, firstName, lastName, email, null, null);
     }
 }
