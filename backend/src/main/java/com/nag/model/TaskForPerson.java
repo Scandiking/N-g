@@ -24,4 +24,3 @@ public class TaskForPerson {
     @JoinColumn(name = "task_id", insertable = false, updatable = false)
     private Task task; // The task entity associated with this assignment
 }
-t
