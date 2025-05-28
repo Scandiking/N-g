@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "noti_freq")
 @Setter
 @Getter
 public class NotiFreq {

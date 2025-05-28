@@ -1,6 +1,7 @@
 package com.nag.service;
 
 import com.nag.dto.NotiFreqDTO;
+import com.nag.mapper.NotiFreqMapper;
 import com.nag.model.NotiFreq;
 import com.nag.repository.NotiFreqRepository;
 import jakarta.persistence.EntityNotFoundException;

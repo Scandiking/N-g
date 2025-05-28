@@ -30,14 +30,14 @@ public class PersonService {
     // Get person by phone number
     @Transactional(readOnly = true)
     public PersonDTO getPersonByPhoneNo(String phoneNo) {
-        Person person = personRepository.findById(phoneNo)
+        Person person = personRepository.findById(Long.valueOf(phoneNo))
                 .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
         return toDTO(person);
     }
 
     // Create a new person
     public PersonDTO createPerson(PersonDTO personDTO) {
-        if (personRepository.existsById(personDTO.getPhoneNo())) {
+        if (personRepository.existsById(Long.valueOf(personDTO.getPhoneNo()))) {
             throw new EntityNotFoundException("Person already exists: " + personDTO.getPhoneNo());
         }
         Person person = toEntity(personDTO);
@@ -47,7 +47,7 @@ public class PersonService {
 
     // Update an existing person
     public PersonDTO updatePerson(String phoneNo, PersonDTO personDTO) {
-        Person person = personRepository.findById(phoneNo)
+        Person person = personRepository.findById(Long.valueOf(phoneNo))
                 .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
 
         person.setFirstName(personDTO.getFirstName());
@@ -62,10 +62,10 @@ public class PersonService {
 
     // Delete a person
     public void deletePerson(String phoneNo) {
-        if (!personRepository.existsById(phoneNo)) {
+        if (!personRepository.existsById(Long.valueOf(phoneNo))) {
             throw new EntityNotFoundException("Person not found: " + phoneNo);
         }
-        personRepository.deleteById(phoneNo);
+        personRepository.deleteById(Long.valueOf(phoneNo));
     }
 
     // Mapper methods

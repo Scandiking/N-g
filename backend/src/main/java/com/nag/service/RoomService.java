@@ -6,6 +6,7 @@ package com.nag.service;
  */
 
 import com.nag.dto.RoomDTO;
+import com.nag.mapper.RoomMapper;
 import com.nag.model.Room;
 import com.nag.repository.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -38,15 +40,15 @@ public class RoomService {
      * @return RoomDTO containing the room details.
      */
     // Get room by ID
-    public List<RoomDTO getRoomById(Short roomId) {
+    public List<RoomDTO> getRoomById(Short roomId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new EntityNotFoundException("Room not found"));
-        return roomMapper.toRoomDTO(room);
+        return Collections.singletonList(roomMapper.toRoomDTO(room));
     }
 
     /**
      * Get rooms by name.
-     * @param roomName the name of the room to search for.
+     * @param 'roomName' the name of the room to search for.
      * @return List of RoomDTO containing rooms with the specified name.
      */
     // Create a new room
