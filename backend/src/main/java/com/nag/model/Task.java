@@ -1,32 +1,52 @@
 package com.nag.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
+@Data
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer taskId;
 
-    @Column(nullable = false)
+    @Column(name = "task_title",nullable = false)
     private String title;
 
+    @Column(name = "task_descr", nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private String status;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    @Column(name = "due_date_time", nullable = false)
     private LocalDateTime dueDate;
+
+    @Column(name = "noti_freq_id", nullable = false)
+    private String notiFreqId;
+
+    @Column(name = "creator",nullable = false)
+    private String creator;
+
+    @Column(name = "completed", nullable = false)
+    private boolean completed;
+/**
+    @ManyToOne
+    @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
+    private NotiFreq notiFreq;
+
+    @ManyToOne
+    @JoinColumn(name = "creator", referencedColumnName = "person")
+    private Person person;
+
+ */
 
     // Konstruktører
     public Task() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+
     }
+
+    /**
 
     // Getters og Setters
     public Integer getTaskId() { return taskId; }
@@ -49,4 +69,5 @@ public class Task {
 
     public LocalDateTime getDueDate() { return dueDate; }
     public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
+     */
 }
