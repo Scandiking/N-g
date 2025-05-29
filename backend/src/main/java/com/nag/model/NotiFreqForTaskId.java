@@ -1,5 +1,6 @@
 package com.nag.model;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
+@Embeddable // Kristian
 public class NotiFreqForTaskId implements Serializable {
 
     /**

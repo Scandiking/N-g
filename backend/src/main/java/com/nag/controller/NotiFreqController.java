@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api/noti-freq")
+@RequestMapping("/api/notifreqs")
 @Tag(name="Notification frequency controller", description="Operations related to notification frequency settings")
 @RequiredArgsConstructor
 public class NotiFreqController {
