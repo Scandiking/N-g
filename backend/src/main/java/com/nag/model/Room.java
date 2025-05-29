@@ -11,6 +11,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "room")
@@ -21,38 +25,76 @@ public class Room {
 
     @Id
     @Column(name = "room_id")
-    private Short roomId; // korresponderer med SMALLINT i SQL
+    private Short roomId;
 
     @Column(name = "room_name", nullable = false, length = 30)
-    private String roomName; // korresponderer med VARCHAR(30) i SQL
+    private String roomName;
 
     @Column(name = "room_descr", length = 70)
-    private String roomDescr; // korresponderer med VARCHAR(70) i SQL
+    private String roomDescr;
 
     @Column(name = "room_admin", nullable = false, length = 15)
-    private String roomAdmin; // korresponderer med VARCHAR(15) i SQL
+    private String roomAdmin;
 
-    @Column(name = "room_picture")
-    private byte[] roomPicture; // korresponderer med BYTEA i SQL
+    // Temporarily commented out to avoid JSON serialization issues
+    // @Column(name = "room_picture")
+    // private byte[] roomPicture;
 
-    // Relationships kan legges til her når Person entiteten er klar
-    // @ManyToOne
-    // @JoinColumn(name = "room_admin", insertable = false, updatable = false)
-    // private Person admin;
+    // JPA Relationship: Room belongs to Person (admin) - now properly configured
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_admin", referencedColumnName = "phone_no",
+            insertable = false, updatable = false)
+    @JsonIgnore // Prevent JSON serialization issues
+    private Person admin;
 
+    // JPA Relationship: Room has many Tasks (One-to-Many)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore // Prevent JSON serialization issues and performance problems
+    private List<Task> tasks;
 
+    // Constructors
     public Room(Short roomId, String roomName, String roomDescr, String roomAdmin, byte[] roomPicture) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.roomDescr = roomDescr;
         this.roomAdmin = roomAdmin;
-        this.roomPicture = roomPicture;
+        this.tasks = new ArrayList<>();
+        // this.roomPicture = roomPicture;
     }
-
 
     public Room(Short roomId, String roomName, String roomAdmin) {
         this.roomId = roomId;
         this.roomName = roomName;
         this.roomAdmin = roomAdmin;
+        this.tasks = new ArrayList<>();
+    }
+
+    // Helper method to get admin Person object - with @JsonIgnore
+    @JsonIgnore
+    public Person getAdminPerson() {
+        return this.admin;
+    }
+
+    // Helper methods for Room → Tasks relationship
+    @JsonIgnore
+    public List<Task> getRoomTasks() {
+        return this.tasks;
+    }
+
+    @JsonIgnore
+    public void addTask(Task task) {
+        this.tasks.add(task);
+        task.setRoomId(this.roomId);
+    }
+
+    @JsonIgnore
+    public void removeTask(Task task) {
+        this.tasks.remove(task);
+        task.setRoomId(null);
+    }
+
+    @JsonIgnore
+    public int getTaskCount() {
+        return this.tasks != null ? this.tasks.size() : 0;
     }
 }

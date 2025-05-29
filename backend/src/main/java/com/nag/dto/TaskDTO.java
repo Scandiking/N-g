@@ -24,5 +24,5 @@ public class TaskDTO {
     private LocalDateTime updatedAt;
     private LocalDateTime dueDate;
 
-    // There is no need for setters or getters as Lombok's @Data annotation generates them automatically.
+
 }

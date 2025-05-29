@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,7 +23,7 @@ public class PersonService {
         return personRepository.findAll()
                 .stream()
                 .map(this::toDTO)
-                .collect(Collectors.toList());
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // Get person by phone number
@@ -68,6 +67,48 @@ public class PersonService {
         personRepository.deleteById(phoneNo);
     }
 
+    // Additional service methods for relationships
+
+    /**
+     * Get count of tasks assigned to a person
+     */
+    @Transactional(readOnly = true)
+    public int getPersonTaskCount(String phoneNo) {
+        Person person = personRepository.findById(phoneNo)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
+        return person.getAssignedTaskCount();
+    }
+
+    /**
+     * Get count of rooms administered by a person
+     */
+    @Transactional(readOnly = true)
+    public int getPersonRoomCount(String phoneNo) {
+        Person person = personRepository.findById(phoneNo)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
+        return person.getAdministeredRoomCount();
+    }
+
+    /**
+     * Check if person is an admin
+     */
+    @Transactional(readOnly = true)
+    public boolean isPersonAdmin(String phoneNo) {
+        Person person = personRepository.findById(phoneNo)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
+        return person.isAdmin();
+    }
+
+    /**
+     * Check if person has assigned tasks
+     */
+    @Transactional(readOnly = true)
+    public boolean personHasTasks(String phoneNo) {
+        Person person = personRepository.findById(phoneNo)
+                .orElseThrow(() -> new EntityNotFoundException("Person not found: " + phoneNo));
+        return person.hasTasks();
+    }
+
     // Mapper methods
     private PersonDTO toDTO(Person person) {
         return new PersonDTO(
@@ -81,6 +122,7 @@ public class PersonService {
     }
 
     private Person toEntity(PersonDTO dto) {
+        // Use the constructor that matches the new Person entity
         return new Person(
                 dto.getPhoneNo(),
                 dto.getFirstName(),
