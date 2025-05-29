@@ -7,10 +7,10 @@ import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface PersonRepository extends JpaRepository<Person, Long> {
+public interface PersonRepository extends JpaRepository<Person, String> {  // Endret fra Long til String
     Optional<Person> findByMail(String mail);
     List<Person> findByFirstName(String firstName);
     List<Person> findByLastName(String lastName);
     List<Person> findByFirstNameAndLastName(String firstName, String lastName);
-    List<Person> findByPhoneNo(String phoneNo);
+    // Fjernet findByPhoneNo siden findById() nå gjør samme jobb
 }
