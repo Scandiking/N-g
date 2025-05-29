@@ -1,0 +1,17 @@
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\config\WebConfiguration.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\controller\PersonController.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\controller\RoomController.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\controller\TaskController.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\NotiFreq.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\NotiFreqForTask.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\NotiFreqForTaskId.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\Person.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\Room.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\RoomForPerson.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\RoomForPersonId.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\model\Task.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\repository\NotiFreqRepository.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\repository\PersonRepository.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\repository\RoomForPersonRepository.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\repository\RoomRepository.java
+C:\Users\kenne\EKSAMEN\nag\N-g\backend\src\main\java\com\nag\repository\TaskRepository.java

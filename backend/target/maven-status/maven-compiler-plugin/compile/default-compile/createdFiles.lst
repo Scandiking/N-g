@@ -1,0 +1,17 @@
+com\nag\repository\PersonRepository.class
+com\nag\controller\RoomController.class
+com\nag\model\RoomForPerson.class
+com\nag\repository\TaskRepository.class
+com\nag\model\NotiFreqForTaskId.class
+com\nag\controller\TaskController.class
+com\nag\model\Room.class
+com\nag\model\Person.class
+com\nag\model\NotiFreq.class
+com\nag\config\WebConfiguration.class
+main\java\com\nag\controller\PersonController.class
+com\nag\model\NotiFreqForTask.class
+com\nag\repository\NotiFreqRepository.class
+com\nag\repository\RoomForPersonRepository.class
+com\nag\model\Task.class
+com\nag\repository\RoomRepository.class
+com\nag\model\RoomForPersonId.class
