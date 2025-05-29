@@ -19,6 +19,7 @@ public class NotiFreq {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "noti_freq_id", nullable = false)
     private short notiFreqId; /// korresponderer med SMALLINT i SQL
 
     @Column(nullable = false)

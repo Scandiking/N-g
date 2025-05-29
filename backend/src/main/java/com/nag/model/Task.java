@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "task_id")
     private Integer taskId;
 
     @Column(name = "task_title",nullable = false)
@@ -19,27 +20,27 @@ public class Task {
     @Column(name = "task_descr", nullable = false)
     private String description;
 
-    @Column(name = "due_date_time", nullable = false)
+    @Column(name = "due_date_time", nullable = true)
     private LocalDateTime dueDate;
 
-    @Column(name = "noti_freq_id", nullable = false)
+    @Column(name = "noti_freq_id", nullable = false, insertable = false, updatable = false)
     private String notiFreqId;
 
-    @Column(name = "creator",nullable = false)
+    @Column(name = "creator",nullable = false, insertable = false, updatable = false)
     private String creator;
 
     @Column(name = "completed", nullable = false)
     private boolean completed;
-/**
+
+    /** */
     @ManyToOne
     @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
     private NotiFreq notiFreq;
 
     @ManyToOne
-    @JoinColumn(name = "creator", referencedColumnName = "person")
+    @JoinColumn(name = "creator", referencedColumnName = "phone_no")
     private Person person;
 
- */
 
     // Konstruktører
     public Task() {
