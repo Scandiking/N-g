@@ -19,10 +19,11 @@ public class TaskDTO {
     private Integer taskId;
     private String title;
     private String description;
-    private String status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     private LocalDateTime dueDate;
+    private short notiFreqId;
+    private String creator;
+    private boolean completed;
+
 
     // There is no need for setters or getters as Lombok's @Data annotation generates them automatically.
 }
