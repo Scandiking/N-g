@@ -13,7 +13,9 @@ import java.util.List;
  *     Gir tilgang til databaseoperasjoner (CRUD) for RoomForPerson-objekter.
  * </p>
  *
- * @author Mia
+ * Composite key uses roomId and phoneNo.
+ *
+ * @author Mia & Jonas
  */
 @Repository
 public interface RoomForPersonRepository extends JpaRepository<RoomForPerson, RoomForPersonId> {
@@ -21,6 +23,6 @@ public interface RoomForPersonRepository extends JpaRepository<RoomForPerson, Ro
     // Henter alle personer knyttet til et rom
     List<RoomForPerson> findByRoomId(Short roomId);
 
-    //Henter alle rom som en person er knyttet til
-    List<RoomForPerson> findByPersonId(String personId);
+    // Henter alle rom som en person er knyttet til, basert på telefonnummer
+    List<RoomForPerson> findByPhoneNo(String phoneNo);
 }
