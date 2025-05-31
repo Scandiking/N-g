@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Repository for RoomForPerson-entiteten
  * <p>
- *     Gir tilgang til databaseoperasjoner (CRUD) for RoomForPerson-objekter.
+ * Gir tilgang til databaseoperasjoner (CRUD) for RoomForPerson-objekter.
  * </p>
  *
  * @author Mia
@@ -22,5 +22,7 @@ public interface RoomForPersonRepository extends JpaRepository<RoomForPerson, Ro
     List<RoomForPerson> findByRoomId(Short roomId);
 
     //Henter alle rom som en person er knyttet til
-    List<RoomForPerson> findByPersonId(String personId);
+    List<RoomForPerson> findByPersonId(String phoneNo);
+
+    
 }
