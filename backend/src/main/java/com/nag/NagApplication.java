@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
 @SpringBootApplication
+@EnableMethodSecurity
 public class NagApplication implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(NagApplication.class);

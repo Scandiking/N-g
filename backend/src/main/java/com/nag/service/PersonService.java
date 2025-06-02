@@ -5,6 +5,7 @@ import com.nag.model.Person;
 import com.nag.repository.PersonRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     // Get all persons
+    @PreAuthorize("hasRole('USER')") // This method can be invoked by user with USER role
     @Transactional(readOnly = true)
     public List<PersonDTO> getAllPersons() {
         return personRepository.findAll()
@@ -61,6 +63,7 @@ public class PersonService {
     }
 
     // Delete a person
+    @PreAuthorize("hasRole('ADMIN')") // This method can be invoked by user with ADMIN role
     public void deletePerson(String phoneNo) {
         if (!personRepository.existsById(phoneNo)) {
             throw new EntityNotFoundException("Person not found: " + phoneNo);

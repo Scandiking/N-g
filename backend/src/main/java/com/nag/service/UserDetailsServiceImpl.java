@@ -1,3 +1,8 @@
+/**
+ * @description Building user for authentication
+ * @author Juha Hinkula (Kristian)
+ */
+
 package com.nag.service;
 
 import com.nag.model.AppUser;
@@ -10,18 +15,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-/**
- * @description Building user for authentication
- * @author Juha Hinkula (Kristian)
- */
-
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final AppUserRepository repository;
 
-public UserDetailsServiceImpl(AppUserRepository repository) {
-    this.repository = repository;
-}
+    public UserDetailsServiceImpl(AppUserRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
