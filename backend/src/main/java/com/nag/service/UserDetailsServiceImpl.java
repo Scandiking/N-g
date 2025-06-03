@@ -1,8 +1,3 @@
-/**
- * @description Building user for authentication
- * @author Juha Hinkula (Kristian)
- */
-
 package com.nag.service;
 
 import com.nag.model.AppUser;
@@ -34,10 +29,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             builder.password(currentUser.getPassword());
             builder.roles(currentUser.getRole());
         } else {
-            throw new UsernameNotFoundException("Username " + username + " not found");
+            throw new UsernameNotFoundException("User " + username + " not found");
         }
 
         return builder.build();
-
     }
+
 }

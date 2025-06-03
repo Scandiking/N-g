@@ -1,28 +1,34 @@
+/**
+ *
+ */
+
 package com.nag.model;
 
-// Følger Fullstack development with Spring Boot 3 and React læreboken som sier å lage en AppUser entitet
-
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class AppUser {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(nullable=false, updatable=false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable=false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String role;
 
-    //
 
-    public AppUser() {}
+    public AppUser() {
+    }
 
     public AppUser(String username, String password, String role) {
         super();
@@ -62,5 +68,6 @@ public class AppUser {
     public void setRole(String role) {
         this.role = role;
     }
+
 
 }
