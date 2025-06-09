@@ -1,3 +1,8 @@
+/**
+ * @description Controller for login function, acquiring JSON web token
+ * @author Kristian
+ */
+
 package com.nag.controller;
 
 import com.nag.model.AccountCredentials;

@@ -2,8 +2,6 @@
  * @author Kristian
  * @description Controller for managing notification frequency settings.
  * This class handles HTTP requests related to notification frequency.
- * It is currently empty and can be expanded with methods to handle specific endpoints.
- * Mest sannsynlig ubrukelig
  */
 
 package com.nag.controller;

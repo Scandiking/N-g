@@ -1,10 +1,10 @@
-package com.nag.dto;
-
 /**
  * Data Transfer Object (DTO) for Task.
+ *
  * @description This class is used to transfer notification frequency data between different layers of the application.
  * @author Kristian
  */
+package com.nag.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,3 +1,8 @@
+/**
+ * @description Routing and request handling of notification frequency for task table
+ * @author Kristan
+ */
+
 package com.nag.mapper;
 
 import com.nag.dto.NotiFreqForTaskDTO;

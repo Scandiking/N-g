@@ -1,11 +1,10 @@
-package com.nag.dto;
-
 /**
  * Data Transfer Object (DTO) for Task.
- * This class is used to transfer task data between different layers of the application.
  *
+ * @description This class is used to transfer task data between different layers of the application.
  * @author Kristian
  */
+package com.nag.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

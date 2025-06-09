@@ -1,3 +1,8 @@
+/**
+ * @description Routing and request handling of room for person table
+ * @author Kristan
+ */
+
 package com.nag.mapper;
 
 import com.nag.dto.RoomForPersonDTO;

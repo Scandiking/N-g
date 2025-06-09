@@ -1,7 +1,3 @@
-package com.nag.dto;
-
-import lombok.*;
-
 /**
  * Data Transfer Object (DTO) for RoomForPerson association.
  * Used to transfer data regarding the relation between Room and Person, including the score.
@@ -10,6 +6,11 @@ import lombok.*;
  *
  * @author Jonas.
  */
+
+package com.nag.dto;
+
+import lombok.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
