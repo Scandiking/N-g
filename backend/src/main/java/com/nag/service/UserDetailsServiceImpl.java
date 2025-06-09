@@ -1,5 +1,8 @@
 package com.nag.service;
 
+import java.util.Optional;
+
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import com.nag.model.AppUser;
 import com.nag.repository.AppUserRepository;
 import org.springframework.security.core.userdetails.User;
@@ -8,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -22,14 +24,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<AppUser> user = repository.findByUsername(username);
 
-        User.UserBuilder builder = null;
+        UserBuilder builder = null;
         if (user.isPresent()) {
             AppUser currentUser = user.get();
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.password(currentUser.getPassword());
             builder.roles(currentUser.getRole());
         } else {
-            throw new UsernameNotFoundException("User " + username + " not found");
+            throw new UsernameNotFoundException(username + " not found");
         }
 
         return builder.build();

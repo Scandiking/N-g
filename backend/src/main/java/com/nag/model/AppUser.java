@@ -1,14 +1,8 @@
-
-
 package com.nag.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 @Entity
-@Getter
-@Setter
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +18,7 @@ public class AppUser {
     @Column(nullable = false)
     private String role;
 
+    // Constructors, getters, setters
 
     public AppUser() {
     }
