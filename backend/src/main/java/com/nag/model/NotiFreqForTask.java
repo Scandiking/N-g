@@ -1,10 +1,3 @@
-package com.nag.model;
-
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Entitet som representerer koblingen mellom {@link Task} og {@link NotiFreq}.
  * Dette er en junction tabell som kobler tasks til deres notification frequency innstillinger.
@@ -14,6 +7,15 @@ import lombok.Setter;
  *
  * @author Kenneth
  */
+
+package com.nag.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
 @Entity
 @NoArgsConstructor
 @Getter

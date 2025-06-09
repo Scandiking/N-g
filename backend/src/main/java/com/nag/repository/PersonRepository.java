@@ -12,5 +12,5 @@ public interface PersonRepository extends JpaRepository<Person, String> {  // En
     List<Person> findByFirstName(String firstName);
     List<Person> findByLastName(String lastName);
     List<Person> findByFirstNameAndLastName(String firstName, String lastName);
-    // Fjernet findByPhoneNo siden findById() nå gjør samme jobb
+    // Fjernet findByPhoneNo siden findById() gjør samme jobb
 }

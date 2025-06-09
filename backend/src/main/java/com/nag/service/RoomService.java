@@ -1,9 +1,11 @@
-package com.nag.service;
-
 /**
  * @description Service class for managing rooms.
  * @author Kristian
  */
+
+package com.nag.service;
+
+
 
 import com.nag.dto.RoomDTO;
 import com.nag.mapper.RoomMapper;

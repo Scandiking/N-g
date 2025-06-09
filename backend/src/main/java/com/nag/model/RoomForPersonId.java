@@ -1,11 +1,3 @@
-package com.nag.model;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.Objects;
-
 /**
  * Komposittnøkkelklasse for RoomForPerson-entiteten
  * <p>
@@ -16,6 +8,16 @@ import java.util.Objects;
  *
  * @author Mia
  */
+
+package com.nag.model;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,3 +1,8 @@
+/**
+ * @description
+ * @author: Jonas
+ */
+
 package com.nag.model;
 
 import jakarta.persistence.Column;
@@ -5,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-// @author: Jonas
 
 public class TaskForPerson {
 

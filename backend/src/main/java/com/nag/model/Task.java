@@ -1,3 +1,4 @@
+
 package com.nag.model;
 
 import jakarta.persistence.*;
@@ -32,7 +33,7 @@ public class Task {
     @Column(name = "completed", nullable = false)
     private boolean completed;
 
-    /** */
+
     @ManyToOne
     @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
     private NotiFreq notiFreq;
@@ -47,28 +48,4 @@ public class Task {
 
     }
 
-    /**
-
-    // Getters og Setters
-    public Integer getTaskId() { return taskId; }
-    public void setTaskId(Integer taskId) { this.taskId = taskId; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-    public LocalDateTime getDueDate() { return dueDate; }
-    public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
-     */
 }

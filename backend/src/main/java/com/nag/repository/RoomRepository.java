@@ -1,3 +1,10 @@
+/**
+ * Repository interface for managing Room entities.
+ * This interface extends JpaRepository to provide CRUD operations for Room entities.
+ *
+ * @author Kenneth
+ */
+
 package com.nag.repository;
 
 import com.nag.model.Room;
@@ -7,12 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Repository interface for managing Room entities.
- * This interface extends JpaRepository to provide CRUD operations for Room entities.
- *
- * @author Kenneth
- */
+
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Short> {
 

@@ -1,3 +1,10 @@
+/**
+ * @description Service class for managing notification frequency settings.
+ * This class will handle business logic related to notification frequencies,
+ * such as creating, updating, deleting, and retrieving notification frequency settings.
+ * @author Kristian
+ */
+
 package com.nag.service;
 
 import com.nag.dto.NotiFreqDTO;
@@ -11,12 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * @description Service class for managing notification frequency settings.
- * This class will handle business logic related to notification frequencies,
- * such as creating, updating, deleting, and retrieving notification frequency settings.
- * @author Kristian
- */
+
 
 
 @Service

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotiFreqForTaskRepository extends JpaRepository<NotiFreqForTask, NotiFreqForTaskId> {
-    // JpaRepository already provides basic CRUD methods.
+
 }

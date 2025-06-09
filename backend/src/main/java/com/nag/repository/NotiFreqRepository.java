@@ -1,3 +1,10 @@
+/**
+ * Repository interface for managing notification frequency settings.
+ * This interface extends JpaRepository to provide CRUD operations for NotiFreq entities.
+ *
+ * @author Kristian
+ */
+
 package com.nag.repository;
 
 import com.nag.model.NotiFreq;
@@ -6,12 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Repository interface for managing notification frequency settings.
- * This interface extends JpaRepository to provide CRUD operations for NotiFreq entities.
- *
- * @author Kristian
- */
+
 @Repository
 public interface NotiFreqRepository extends JpaRepository<NotiFreq, Short> {
 

@@ -1,3 +1,9 @@
+/**
+ * Service class for managing the association between Room and Person (RoomForPerson).
+ * Provides methods for CRUD operations and score updates on the composite entity.
+ * @author Jonas
+ */
+
 package com.nag.service;
 
 import com.nag.dto.RoomForPersonDTO;
@@ -13,12 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Service class for managing the association between Room and Person (RoomForPerson).
- * Provides methods for CRUD operations and score updates on the composite entity.
- */
 
-// @author Jonas
 
 
 @Service

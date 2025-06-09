@@ -1,3 +1,12 @@
+/**
+ * Repository for RoomForPerson-entiteten
+ * <p>
+ * Gir tilgang til databaseoperasjoner (CRUD) for RoomForPerson-objekter.
+ * </p>
+ *
+ * @author Mia
+ */
+
 package com.nag.repository;
 
 import com.nag.model.RoomForPerson;
@@ -7,14 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Repository for RoomForPerson-entiteten
- * <p>
- * Gir tilgang til databaseoperasjoner (CRUD) for RoomForPerson-objekter.
- * </p>
- *
- * @author Mia
- */
+
 @Repository
 public interface RoomForPersonRepository extends JpaRepository<RoomForPerson, RoomForPersonId> {
 

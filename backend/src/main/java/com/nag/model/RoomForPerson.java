@@ -1,11 +1,3 @@
-package com.nag.model;
-
-import jakarta.persistence.*;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Entitet som representerer koblingen mellom {@link Room} og {@link Person}.
  * Inneholder også en ekstra attributt, score,
@@ -15,6 +7,16 @@ import lombok.Setter;
  *
  * @author Mia
  */
+
+package com.nag.model;
+
+import jakarta.persistence.*;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
 @Entity
 @NoArgsConstructor
 @Getter
