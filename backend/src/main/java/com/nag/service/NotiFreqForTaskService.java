@@ -1,3 +1,7 @@
+/**
+ * @description
+ * @author Kristian
+ */
 package com.nag.service;
 
 import com.nag.dto.NotiFreqForTaskDTO;
@@ -14,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * @description
- * @author Kristian
- */
+
 
 @Service
 @Transactional
