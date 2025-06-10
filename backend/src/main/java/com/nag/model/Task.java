@@ -35,8 +35,13 @@ public class Task {
 
 
     @ManyToOne
-    @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
+    @JoinColumn(
+            name = "noti_freq_id",
+            referencedColumnName = "noti_freq_id",
+            columnDefinition = "smallint"
+    )
     private NotiFreq notiFreq;
+
 
     @ManyToOne
     @JoinColumn(name = "creator", referencedColumnName = "phone_no")
