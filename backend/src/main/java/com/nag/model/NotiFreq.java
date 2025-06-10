@@ -1,10 +1,3 @@
-/**
- * @description Entity class representing notification frequency settings.
- * This class is used to store the frequency of notifications for a user.
- * It includes fields for the ID, user ID, and frequency type.
- * @author Kristian
- */
-
 package com.nag.model;
 
 import jakarta.persistence.*;
@@ -14,11 +7,18 @@ import lombok.Setter;
 @Entity
 @Setter
 @Getter
+/**
+ * @description Entity class representing notification frequency settings.
+ * This class is used to store the frequency of notifications for a user.
+ * It includes fields for the ID, user ID, and frequency type.
+ * @author Kristian
+ */
 public class NotiFreq {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private short notiFreqId; /// korresponderer med SMALLINT i SQL
+    private short notiFreqId;
+    /// korresponderer med SMALLINT i SQL
 
     @Column(nullable = false)
     private String notiFreqTitle; // korresponderer med TEXT i SQL
