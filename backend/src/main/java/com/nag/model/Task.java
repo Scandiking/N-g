@@ -7,7 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "task")
 @Data
 public class Task {
     @Id
@@ -37,8 +37,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(
             name = "noti_freq_id",
-            referencedColumnName = "noti_freq_id",
-            columnDefinition = "smallint"
+            referencedColumnName = "noti_freq_id"
     )
     private NotiFreq notiFreq;
 
