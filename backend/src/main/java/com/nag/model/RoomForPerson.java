@@ -1,5 +1,4 @@
-package main.java.com.nag.model;
-
+package com.nag.model;
 
 import jakarta.persistence.*;
 

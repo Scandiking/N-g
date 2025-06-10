@@ -1,167 +1,92 @@
 /**
- * RoomController.java
- * Controller for managing room-related operations.
- * This controller provides endpoints to retrieve, create, and delete rooms.
+ * PersonController.java
+ * Controller for managing person-related operations.
+ * @description This controller provides endpoints to retrieve, create, update, and delete persons.
+ * @author Kristian
  */
 
 package com.nag.controller;
-import com.nag.model.Person;
-import com.nag.repository.PersonRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.nag.dto.*;
+import com.nag.service.PersonService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.nag.model.Person;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/persons")
+@Tag(name = "Person Management", description = "Operations related to managing persons")
+@RequiredArgsConstructor
 public class PersonController {
+    private final PersonService personService;
 
-    @Autowired
-    private PersonRepository personRepository;
-
-    /**
-     * Retrieves all persons.
-     *
-     * @return a list of all persons
-     */
     @GetMapping
-    public List<Person> getAllPersons() {
-        return personRepository.findAll();
+    @Operation(summary = "Get all persons", description = "Retrieve a list of all persons")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved list of persons"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<PersonDTO>> getAllPersons() {
+        List<PersonDTO> persons = personService.getAllPersons();
+        return new ResponseEntity<>(persons, HttpStatus.OK);
     }
 
-    /**
-     * Retrieves a person by their ID.
-     *
-     * @param id the ID of the person
-     * @return the person with the specified ID, or 404 if not found
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
-        return personRepository.findById(id)
-                .map(person -> new ResponseEntity<>(person, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    @GetMapping("/{phoneNo}")
+    @Operation(summary = "Get person by phone number", description = "Retrieve a person by their phone number")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved person"),
+        @ApiResponse(responseCode = "404", description = "Person not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<PersonDTO> getPersonByPhoneNo(@PathVariable String phoneNo) {
+        PersonDTO person = personService.getPersonByPhoneNo(phoneNo);
+        return new ResponseEntity<>(person, HttpStatus.OK);
     }
-}
 
-    /**
-     * Creates a new person.
-     *
-     * @param person the person to create
-     * @return the created person with status 201
-     */
     @PostMapping
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        Person savedPerson = personRepository.save(person);
-        return new ResponseEntity<>(savedPerson, HttpStatus.CREATED);
+    @Operation(summary = "Create a new person", description = "Create a new person with the provided details")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Successfully created person"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonDTO personDTO) {
+        PersonDTO createdPerson = personService.createPerson(personDTO);
+        return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
     }
 
-    /**
-     * Deletes a person by their ID.
-     *
-     * @param id the ID of the person to delete
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
-        if (personRepository.existsById(id)) {
-            personRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PutMapping("/{phoneNo}")
+    @Operation(summary = "Update an existing person", description = "Update the details of an existing person")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully updated person"),
+        @ApiResponse(responseCode = "404", description = "Person not found"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<PersonDTO> updatePerson(@PathVariable String phoneNo, @Valid @RequestBody PersonDTO personDTO) {
+        PersonDTO updatedPerson = personService.updatePerson(phoneNo, personDTO);
+        return new ResponseEntity<>(updatedPerson, HttpStatus.OK);
     }
-}
 
-    /**
-     * Updates a person.
-     *
-     * @param id the ID of the person to update
-     * @param person the updated person data
-     * @return the updated person, or 404 if not found
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person person) {
-        if (personRepository.existsById(id)) {
-            person.setId(id);
-            Person updatedPerson = personRepository.save(person);
-            return new ResponseEntity<>(updatedPerson, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-}
-
-    /**
-     * Checks if a person exists by their ID.
-     *
-     * @param id the ID of the person
-     * @return true if the person exists, false otherwise
-     */
-    @GetMapping("/exists/{id}")
-    public ResponseEntity<Boolean> personExists(@PathVariable Long id) {
-        return new ResponseEntity<>(personRepository.existsById(id), HttpStatus.OK);
-    }
-}
-
-    /**
-     * Retrieves a person by their email.
-     *
-     * @param email the email of the person
-     * @return the person with the specified email, or 404 if not found
-     */
-    @GetMapping("/email/{email}")
-    public ResponseEntity<Person> getPersonByEmail(@PathVariable String email) {
-        return personRepository.findByEmail(email)
-                .map(person -> new ResponseEntity<>(person, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-}
-
-    /**
-     * Retrieves persons by their first name.
-     *
-     * @param firstName the first name of the persons
-     * @return a list of persons with the specified first name
-     */
-    @GetMapping("/first-name/{firstName}")
-    public List<Person> getPersonsByFirstName(@PathVariable String firstName) {
-        return personRepository.findByFirstName(firstName);
-    }
-}
-
-    /**
-     * Retrieves persons by their last name.
-     *
-     * @param lastName the last name of the persons
-     * @return a list of persons with the specified last name
-     */
-    @GetMapping("/last-name/{lastName}")
-    public List<Person> getPersonsByLastName(@PathVariable String lastName) {
-        return personRepository.findByLastName(lastName);
-    }
-}
-
-    /**
-     * Retrieves persons by their full name.
-     *
-     * @param firstName the first name of the persons
-     * @param lastName the last name of the persons
-     * @return a list of persons with the specified full name
-     */
-    @GetMapping("/full-name/{firstName}/{lastName}")
-    public List<Person> getPersonsByFullName(@PathVariable String firstName, @PathVariable String lastName) {
-        return personRepository.findByFirstNameAndLastName(firstName, lastName);
-    }
-}
-
-    /**
-     * Retrieves persons by their phone number.
-     *
-     * @param phoneNumber the phone number of the persons
-     * @return a list of persons with the specified phone number
-     */
-    @GetMapping("/phone/{phoneNumber}")
-    public List<Person> getPersonsByPhoneNumber(@PathVariable String phoneNumber) {
-        return personRepository.findByPhoneNumber(phoneNumber);
+    @DeleteMapping("/{phoneNo}")
+    @Operation(summary = "Delete a person", description = "Delete a person by their phone number")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Successfully deleted person"),
+        @ApiResponse(responseCode = "404", description = "Person not found"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Void> deletePerson(@PathVariable String phoneNo) {
+        personService.deletePerson(phoneNo);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

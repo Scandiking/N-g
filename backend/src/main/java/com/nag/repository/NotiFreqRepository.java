@@ -1,8 +1,10 @@
-package com.java.nag.repository;
-import com.java.nag.model.NotiFreq;
+package com.nag.repository;
+
+import com.nag.model.NotiFreq;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing notification frequency settings.
@@ -10,52 +12,48 @@ import java.util.List;
  *
  * @author Kristian
  */
-
 @Repository
-public interface ProductRepository extends JpaRepository<NotiFreq, Short>
-{
-    /**
-     * Finds all notification frequencies by user ID.
-     *
-     * @param userId the ID of the user
-     * @return a list of notification frequencies for the specified user
-     */
-    List<NotiFreq> findByUserId(String userId);
+public interface NotiFreqRepository extends JpaRepository<NotiFreq, Short> {
 
     /**
      * Finds a notification frequency by its ID.
      *
      * @param notiFreqId the ID of the notification frequency
-     * @return the notification frequency with the specified ID, or null if not found
+     * @return Optional containing the notification frequency if found, otherwise empty
      */
-    NotiFreq findByNotiFreqId(Short notiFreqId);
-}
+    Optional<NotiFreq> findByNotiFreqId(Short notiFreqId);
 
     /**
-     * Deletes a notification frequency by its ID.
+     * Finds notification frequencies by their title.
      *
-     * @param notiFreqId the ID of the notification frequency to delete
+     * @param notiFreqTitle the title of the notification frequency
+     * @return a list of notification frequencies with the specified title
      */
-    void deleteByNotiFreqId(Short notiFreqId);
-}
+    List<NotiFreq> findByNotiFreqTitle(String notiFreqTitle);
 
     /**
-     * Saves a notification frequency.
+     * Finds notification frequencies by base interval.
      *
-     * @param notiFreq the notification frequency to save
-     * @return the saved notification frequency
+     * @param baseInterval the base interval
+     * @return a list of notification frequencies with the specified base interval
      */
-    NotiFreq save(NotiFreq notiFreq);
-}
+    List<NotiFreq> findByBaseInterval(String baseInterval);
 
     /**
-     * Updates a notification frequency.
+     * Finds notification frequencies by growth factor.
      *
-     * @param notiFreq the notification frequency to update
-     * @return the updated notification frequency
+     * @param growthFactor the growth factor
+     * @return a list of notification frequencies with the specified growth factor
      */
-    NotiFreq update(NotiFreq notiFreq);
-}
+    List<NotiFreq> findByGrowthFactor(Float growthFactor);
+
+    /**
+     * Finds notification frequencies by max repeats.
+     *
+     * @param maxRepeats the maximum number of repeats
+     * @return a list of notification frequencies with the specified max repeats
+     */
+    List<NotiFreq> findByMaxRepeats(Short maxRepeats);
 
     /**
      * Checks if a notification frequency exists by its ID.
@@ -64,21 +62,11 @@ public interface ProductRepository extends JpaRepository<NotiFreq, Short>
      * @return true if the notification frequency exists, false otherwise
      */
     boolean existsByNotiFreqId(Short notiFreqId);
-}
 
     /**
-     * Finds all notification frequencies.
+     * Deletes a notification frequency by its ID.
      *
-     * @return a list of all notification frequencies
+     * @param notiFreqId the ID of the notification frequency to delete
      */
-    List<NotiFreq> findAll();
-}
-
-    /**
-     * Finds notification frequencies by their title.
-     *
-     * @param title the title of the notification frequency
-     * @return a list of notification frequencies with the specified title
-     */
-    List<NotiFreq> findByNotiFreqTitle(String title);
+    void deleteByNotiFreqId(Short notiFreqId);
 }

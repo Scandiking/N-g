@@ -4,6 +4,7 @@
  */
 
 package com.nag.controller;
+
 import com.nag.model.Room;
 import com.nag.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/rooms")
-
 public class RoomController {
 
     @Autowired
@@ -42,7 +42,6 @@ public class RoomController {
                 .map(room -> new ResponseEntity<>(room, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-}
 
     /**
      * Creates a new room.
@@ -55,23 +54,6 @@ public class RoomController {
         Room savedRoom = roomRepository.save(room);
         return new ResponseEntity<>(savedRoom, HttpStatus.CREATED);
     }
-
-    /**
-     * Deletes a room by its ID.
-     *
-     * @param id the ID of the room to delete
-     * @return 204 No Content if successful, or 404 if not found
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoom(@PathVariable Short id) {
-        if (roomRepository.existsById(id)) {
-            roomRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-}
 
     /**
      * Updates an existing room.
@@ -90,7 +72,22 @@ public class RoomController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
+
+    /**
+     * Deletes a room by its ID.
+     *
+     * @param id the ID of the room to delete
+     * @return 204 No Content if successful, or 404 if not found
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Short id) {
+        if (roomRepository.existsById(id)) {
+            roomRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
     /**
      * Checks if a room exists by its ID.
