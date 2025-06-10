@@ -25,7 +25,7 @@ public class Task {
     private LocalDateTime dueDate;
 
     @Column(name = "noti_freq_id", nullable = false, insertable = false, updatable = false)
-    private String notiFreqId;
+    private Short notiFreqId;
 
     @Column(name = "creator",nullable = false, insertable = false, updatable = false)
     private String creator;
