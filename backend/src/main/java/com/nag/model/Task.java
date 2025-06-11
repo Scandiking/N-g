@@ -1,3 +1,4 @@
+// src/main/java/com/nag/model/Task.java
 package com.nag.model;
 
 import jakarta.persistence.*;
@@ -9,8 +10,6 @@ import java.time.LocalDateTime;
 /**
  * Entity representing a task in the system.
  * Tasks are created by persons and have notification frequency settings.
- *
- * @author []
  */
 @Entity
 @Table(name = "tasks")
@@ -29,27 +28,39 @@ public class Task {
     @Column(name = "task_descr", nullable = false)
     private String description;
 
+    /**
+     * When the task is due.
+     */
     @Column(name = "due_date_time")
     private LocalDateTime dueDate;
 
-    @Column(name = "noti_freq_id", insertable = false, updatable = false)
+    /**
+     * Notification frequency ID (matches your noti_freq table).
+     */
+    @Column(name = "noti_freq_id")
     private Short notiFreqId;
 
-    @Column(name = "creator", nullable = false, insertable = false, updatable = false)
+    /**
+     * The phoneNo of the user who created this task.
+     */
+    @Column(name = "creator", nullable = false)
     private String creator;
 
+    /**
+     * Whether the task is marked completed.
+     */
     @Column(name = "completed", nullable = false)
     private boolean completed = false;
 
     /**
-     * Relasjon til notification frequency for denne tasken.
+     * Relation to notification frequency for this task.
      */
     @ManyToOne
     @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
     private NotiFreq notiFreq;
 
     /**
-     * Relasjon til personen som opprettet denne tasken.
+     * Relation to the person who created this task.
      */
     @ManyToOne
     @JoinColumn(name = "creator", referencedColumnName = "phone_no")
