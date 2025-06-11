@@ -32,10 +32,9 @@ const AddTask = ({ open, onClose }) => {
     const [currentDate, setCurrentDate] = useState(null);
     const [currentTime, setCurrentTime] = useState(null);
     const [selectedRoom, setSelectedRoom] = useState('');
-    const [selectedPerson, setSelectedPerson] = useState('');
+    const [selectedPerson, setSelectedPerson] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Data from backend
     const [rooms, setRooms] = useState([]);
     const [people, setPeople] = useState([]);
     const [snackbar, setSnackbar] = useState({
@@ -44,7 +43,6 @@ const AddTask = ({ open, onClose }) => {
         severity: 'success'
     });
 
-    // Fetch rooms and people when dialog opens
     useEffect(() => {
         if (open) {
             fetchRooms();
@@ -54,37 +52,27 @@ const AddTask = ({ open, onClose }) => {
 
     const fetchRooms = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/rooms', {
-                headers: {
-                    'Authorization': token && !token.startsWith('Bearer ')
-                        ? `Bearer ${token}`
-                        : token || ''
-                }
+            let token = localStorage.getItem('token');
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
+            const res = await fetch('http://localhost:8080/api/rooms', {
+                headers: { Authorization: token || '' }
             });
-            if (response.ok) {
-                setRooms(await response.json());
-            }
-        } catch (error) {
-            console.error('Error fetching rooms:', error);
+            if (res.ok) setRooms(await res.json());
+        } catch (err) {
+            console.error('Error fetching rooms:', err);
         }
     };
 
     const fetchPeople = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/persons', {
-                headers: {
-                    'Authorization': token && !token.startsWith('Bearer ')
-                        ? `Bearer ${token}`
-                        : token || ''
-                }
+            let token = localStorage.getItem('token');
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
+            const res = await fetch('http://localhost:8080/api/persons', {
+                headers: { Authorization: token || '' }
             });
-            if (response.ok) {
-                setPeople(await response.json());
-            }
-        } catch (error) {
-            console.error('Error fetching people:', error);
+            if (res.ok) setPeople(await res.json());
+        } catch (err) {
+            console.error('Error fetching people:', err);
         }
     };
 
@@ -113,7 +101,6 @@ const AddTask = ({ open, onClose }) => {
 
         setLoading(true);
         try {
-            // Create the task
             const taskData = {
                 title: taskTitle.trim(),
                 description: taskDescription.trim(),
@@ -124,37 +111,35 @@ const AddTask = ({ open, onClose }) => {
             let token = localStorage.getItem('token');
             if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
 
-            const taskResponse = await fetch('http://localhost:8080/api/tasks', {
+            const res = await fetch('http://localhost:8080/api/tasks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token || ''
+                    Authorization: token || ''
                 },
-                body: JSON.stringify(taskData),
+                body: JSON.stringify(taskData)
             });
-            if (!taskResponse.ok) {
-                const errorText = await taskResponse.text();
-                throw new Error(`Failed to create task: ${taskResponse.status} - ${errorText}`);
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`${res.status} - ${text}`);
             }
-            const createdTask = await taskResponse.json();
+            const created = await res.json();
 
-            // Assign to person or room
             if (selectedPerson !== 'Everyone in room') {
                 const phoneNo = typeof selectedPerson === 'object'
                     ? selectedPerson.phoneNo
                     : selectedPerson;
-                await assignTaskToPerson(createdTask.taskId, phoneNo);
+                await assignTaskToPerson(created.taskId, phoneNo);
             } else {
-                await assignTaskToRoom(createdTask.taskId, selectedRoom);
+                await assignTaskToRoom(created.taskId, selectedRoom);
             }
 
             resetForm();
             setSnackbar({ open: true, message: 'Task created and assigned successfully!', severity: 'success' });
             onClose();
-
-        } catch (error) {
-            console.error('Error creating task:', error);
-            setSnackbar({ open: true, message: `Failed to create task: ${error.message}`, severity: 'error' });
+        } catch (err) {
+            console.error('Error creating task:', err);
+            setSnackbar({ open: true, message: `Failed: ${err.message}`, severity: 'error' });
         } finally {
             setLoading(false);
         }
@@ -165,39 +150,35 @@ const AddTask = ({ open, onClose }) => {
             const dto = { taskId, phoneNo };
             let token = localStorage.getItem('token');
             if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
-
             await fetch('http://localhost:8080/api/taskforpersons', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token || ''
+                    Authorization: token || ''
                 },
                 body: JSON.stringify(dto)
             });
-        } catch (error) {
-            console.error('Error assigning task to person:', error);
+        } catch (err) {
+            console.error('Error assigning to person:', err);
         }
     };
 
     const assignTaskToRoom = async (taskId, roomId) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/roomforpersons', {
-                headers: {
-                    'Authorization': token && !token.startsWith('Bearer ')
-                        ? `Bearer ${token}`
-                        : token || ''
-                }
+            let token = localStorage.getItem('token');
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
+            const res = await fetch('http://localhost:8080/api/roomforpersons', {
+                headers: { Authorization: token || '' }
             });
-            if (response.ok) {
-                const allAssignments = await response.json();
-                const roomPeople = allAssignments.filter(rp => rp.roomId === roomId);
-                for (const rp of roomPeople) {
-                    await assignTaskToPerson(taskId, rp.phoneNo);
+            if (res.ok) {
+                const all = await res.json();
+                const members = all.filter(rp => rp.roomId === roomId);
+                for (const m of members) {
+                    await assignTaskToPerson(taskId, m.phoneNo);
                 }
             }
-        } catch (error) {
-            console.error('Error assigning task to room:', error);
+        } catch (err) {
+            console.error('Error assigning to room:', err);
         }
     };
 
@@ -209,7 +190,7 @@ const AddTask = ({ open, onClose }) => {
         setCurrentDate(null);
         setCurrentTime(null);
         setSelectedRoom('');
-        setSelectedPerson('');
+        setSelectedPerson(null);
     };
 
     const handleCloseSnackbar = () => {
@@ -218,8 +199,8 @@ const AddTask = ({ open, onClose }) => {
 
     const getPeopleOptions = () => {
         if (!selectedRoom) return people;
-        const options = people.filter(() => true); // refine if needed
-        return [...options, 'Everyone in room'];
+        // if room selected, filter as needed, then add the special option
+        return [...people.filter(() => true), 'Everyone in room'];
     };
 
     return (
@@ -236,7 +217,6 @@ const AddTask = ({ open, onClose }) => {
                                 required fullWidth disabled={loading}
                             />
                         </Tooltip>
-
                         <Tooltip title="Details">
                             <TextField
                                 label="Task description"
@@ -246,7 +226,6 @@ const AddTask = ({ open, onClose }) => {
                                 fullWidth disabled={loading}
                             />
                         </Tooltip>
-
                         <FormControl disabled={loading}>
                             <FormLabel>Notification schedule</FormLabel>
                             <RadioGroup value={notificationType} onChange={e => setNotificationType(e.target.value)}>
@@ -257,7 +236,6 @@ const AddTask = ({ open, onClose }) => {
                                 <FormControlLabel value="5" control={<Radio />} label="Custom" />
                             </RadioGroup>
                         </FormControl>
-
                         <Collapse in={notificationType === '5'}>
                             <Box sx={{ mt: 2, p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -291,32 +269,30 @@ const AddTask = ({ open, onClose }) => {
                                 </Box>
                             </Box>
                         </Collapse>
-
                         <Autocomplete
                             options={rooms}
                             getOptionLabel={opt => opt.roomName || opt}
                             value={selectedRoom}
                             onChange={(e, v) => {
                                 setSelectedRoom(v?.roomId || v || '');
-                                setSelectedPerson('');
+                                setSelectedPerson(null);
                             }}
                             disabled={loading}
                             renderInput={params => <TextField {...params} label="Room" />}
                         />
-
                         <Autocomplete
                             options={getPeopleOptions()}
-                            getOptionLabel={opt =>
-                                opt === 'Everyone in room'
-                                    ? opt
-                                    : `${opt.firstName} ${opt.lastName}`
-                            }
+                            getOptionLabel={opt => {
+                                if (opt === 'Everyone in room') return opt;
+                                const fn = opt.firstName || '';
+                                const ln = opt.lastName || '';
+                                return `${fn} ${ln}`.trim();
+                            }}
                             value={selectedPerson}
                             onChange={(e, v) => setSelectedPerson(v)}
                             disabled={loading}
                             renderInput={params => <TextField {...params} label="Assign to" required />}
                         />
-
                         <Button
                             variant="contained"
                             onClick={assignTask}
@@ -324,14 +300,15 @@ const AddTask = ({ open, onClose }) => {
                             sx={{ mt: 2 }}
                         >
                             {loading
-                                ? <><CircularProgress size={20} sx={{ mr: 1 }} /> Creating task...</>
+                                ? <>
+                                    <CircularProgress size={20} sx={{ mr: 1 }} />
+                                    Creating task...
+                                </>
                                 : 'Add task'}
                         </Button>
                     </Box>
                 </DialogContent>
             </Dialog>
-
-            {/* Feedback */}
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={6000}
