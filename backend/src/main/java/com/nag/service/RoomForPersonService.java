@@ -5,8 +5,6 @@ import com.nag.mapper.RoomForPersonMapper;
 import com.nag.model.RoomForPerson;
 import com.nag.model.RoomForPersonId;
 import com.nag.repository.RoomForPersonRepository;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,24 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Service class for managing the association between Room and Person (RoomForPerson).
- * Provides methods for CRUD operations and score updates on the composite entity.
+ * Service for managing RoomForPerson relationships.
+ * Handles business logic for associating persons with rooms including scores.
+ *
+ * @author Generated Service
  */
-
-// @author Jonas
-
-
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class RoomForPersonService {
+
     private final RoomForPersonRepository roomForPersonRepository;
     private final RoomForPersonMapper roomForPersonMapper;
 
     /**
-     * Retrieve all RoomForPerson relations.
+     * Get all room-person relationships.
      *
-     * @return list of all relations
+     * @return list of all RoomForPersonDTO
      */
     public List<RoomForPersonDTO> getAllRoomForPersons() {
         List<RoomForPerson> roomForPersons = roomForPersonRepository.findAll();
@@ -39,102 +36,125 @@ public class RoomForPersonService {
     }
 
     /**
-     * Find a specific RoomForPerson by composite key
+     * Get a specific room-person relationship by composite key.
      *
      * @param roomId the room ID
-     * @return optional containing the relation if found
+     * @param phoneNo the person's phone number
+     * @return RoomForPersonDTO if found
+     * @throws RuntimeException if not found
      */
     public RoomForPersonDTO getRoomForPersonById(Short roomId, String phoneNo) {
-        RoomForPersonId roomForPersonId = new RoomForPersonId(roomId, phoneNo); // Create composite key
-        RoomForPerson roomForPerson = roomForPersonRepository.findById(roomForPersonId)
-                .orElseThrow(() -> new EntityNotFoundException("RoomForPerson not found"));
-        return roomForPersonMapper.toRoomForPersonDTO(roomForPerson); // Map to DTO
+        RoomForPersonId id = new RoomForPersonId(roomId, phoneNo);
+        RoomForPerson roomForPerson = roomForPersonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("RoomForPerson not found with roomId: " + roomId + " and phoneNo: " + phoneNo));
+        return roomForPersonMapper.toRoomForPersonDTO(roomForPerson);
     }
 
     /**
-     * Find all relations for a given room.
+     * Get all persons associated with a specific room.
      *
      * @param roomId the room ID
-     * @return list of relations
+     * @return list of RoomForPersonDTO for the specified room
      */
-    public List<RoomForPerson> getByRoomId(Short roomId) {
-        return roomForPersonRepository.findByRoomId(roomId);
+    public List<RoomForPersonDTO> getPersonsByRoomId(Short roomId) {
+        List<RoomForPerson> roomForPersons = roomForPersonRepository.findByRoomId(roomId);
+        return roomForPersonMapper.toRoomForPersonDTOs(roomForPersons);
     }
 
     /**
-     * Find all relations for a given person.
+     * Get all rooms associated with a specific person.
      *
-     * @param phoneNo the person ID
-     * @return list of relations
+     * @param phoneNo the person's phone number
+     * @return list of RoomForPersonDTO for the specified person
      */
-    public List<RoomForPerson> getByPersonId(String phoneNo) {
-        return roomForPersonRepository.findByPersonId(phoneNo);
+    public List<RoomForPersonDTO> getRoomsByPhoneNo(String phoneNo) {
+        List<RoomForPerson> roomForPersons = roomForPersonRepository.findByPhoneNo(phoneNo);
+        return roomForPersonMapper.toRoomForPersonDTOs(roomForPersons);
     }
 
     /**
-     * Create a new RoomForPerson relation.
+     * Create a new room-person relationship.
      *
-     * @param roomForPersonDTO the RoomForPerson to save
-     * @return the saved entity
+     * @param roomForPersonDTO the data to create
+     * @return the created RoomForPersonDTO
      */
-    public RoomForPersonDTO createRoomForPerson(@Valid RoomForPersonDTO roomForPersonDTO) {
-        RoomForPerson roomForPerson = new RoomForPerson();
+    public RoomForPersonDTO createRoomForPerson(RoomForPersonDTO roomForPersonDTO) {
+        // Check if relationship already exists
+        RoomForPersonId id = new RoomForPersonId(roomForPersonDTO.getRoomId(), roomForPersonDTO.getPhoneNo());
+        if (roomForPersonRepository.existsById(id)) {
+            throw new RuntimeException("RoomForPerson relationship already exists for roomId: " +
+                    roomForPersonDTO.getRoomId() + " and phoneNo: " + roomForPersonDTO.getPhoneNo());
+        }
 
-        roomForPerson.setRoomId(roomForPersonDTO.getRoomId());
-        roomForPerson.setPersonId(roomForPersonDTO.getPhoneNo());
-        roomForPerson.setScore(roomForPersonDTO.getScore());
-
+        RoomForPerson roomForPerson = roomForPersonMapper.toRoomForPerson(roomForPersonDTO);
         RoomForPerson savedRoomForPerson = roomForPersonRepository.save(roomForPerson);
         return roomForPersonMapper.toRoomForPersonDTO(savedRoomForPerson);
     }
 
     /**
-     * Update an existing RoomForPerson relation (including score).
+     * Update an existing room-person relationship.
      *
-     * @param 'roomForPerson' the updated RoomForPerson
-     * @return the saved entity
+     * @param roomId the room ID
+     * @param phoneNo the person's phone number
+     * @param roomForPersonDTO the updated data
+     * @return the updated RoomForPersonDTO
      */
-    public RoomForPersonDTO updateRoomForPerson(Short roomId, String phoneNo, @Valid RoomForPersonDTO roomForPersonDTO) {
-        RoomForPersonId roomForPersonId = new RoomForPersonId(roomId, phoneNo);
+    public RoomForPersonDTO updateRoomForPerson(Short roomId, String phoneNo, RoomForPersonDTO roomForPersonDTO) {
+        RoomForPersonId id = new RoomForPersonId(roomId, phoneNo);
 
-        RoomForPerson existingRoomForPerson = roomForPersonRepository.findById(roomForPersonId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("RoomForPerson not found for roomId=%d, personId=%s", roomId, phoneNo)
-                ));
+        RoomForPerson existingRoomForPerson = roomForPersonRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("RoomForPerson not found with roomId: " + roomId + " and phoneNo: " + phoneNo));
 
+        // Update the score (main thing that can be updated in this relationship)
         existingRoomForPerson.setScore(roomForPersonDTO.getScore());
+
         RoomForPerson updatedRoomForPerson = roomForPersonRepository.save(existingRoomForPerson);
-
         return roomForPersonMapper.toRoomForPersonDTO(updatedRoomForPerson);
-
     }
 
     /**
-     * Delete a RoomForPerson relation by composite key.
+     * Delete a room-person relationship.
      *
-     * @param roomId  the room ID
-     * @param phoneNo the person ID
+     * @param roomId the room ID
+     * @param phoneNo the person's phone number
      */
     public void deleteRoomForPerson(Short roomId, String phoneNo) {
-        RoomForPersonId roomForPersonId = new RoomForPersonId(roomId, phoneNo);
-        roomForPersonRepository.deleteById(roomForPersonId);
+        RoomForPersonId id = new RoomForPersonId(roomId, phoneNo);
+
+        if (!roomForPersonRepository.existsById(id)) {
+            throw new RuntimeException("RoomForPerson not found with roomId: " + roomId + " and phoneNo: " + phoneNo);
+        }
+
+        roomForPersonRepository.deleteById(id);
     }
 
     /**
-     * Update only the score attribute for a given room-person relation.
+     * Delete all room associations for a specific person.
      *
-     * @param roomId   the room ID
-     * @param phoneNo  the person ID
-     * @param newScore the new score
-     * @return the updated entity
+     * @param phoneNo the person's phone number
      */
-    public RoomForPerson updateScore(Short roomId, String phoneNo, Short newScore) {
-        RoomForPersonId roomForPersonId = new RoomForPersonId(roomId, phoneNo);
-        RoomForPerson association = roomForPersonRepository.findById(roomForPersonId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format("Relation not found for roomId=%d, personId=%s", roomId, phoneNo)
-                ));
-        association.setScore(newScore);
-        return roomForPersonRepository.save(association);
+    public void deleteAllRoomsForPerson(String phoneNo) {
+        roomForPersonRepository.deleteByPhoneNo(phoneNo);
+    }
+
+    /**
+     * Delete all person associations for a specific room.
+     *
+     * @param roomId the room ID
+     */
+    public void deleteAllPersonsForRoom(Short roomId) {
+        roomForPersonRepository.deleteByRoomId(roomId);
+    }
+
+    /**
+     * Check if a room-person relationship exists.
+     *
+     * @param roomId the room ID
+     * @param phoneNo the person's phone number
+     * @return true if relationship exists, false otherwise
+     */
+    public boolean existsRoomForPerson(Short roomId, String phoneNo) {
+        RoomForPersonId id = new RoomForPersonId(roomId, phoneNo);
+        return roomForPersonRepository.existsById(id);
     }
 }

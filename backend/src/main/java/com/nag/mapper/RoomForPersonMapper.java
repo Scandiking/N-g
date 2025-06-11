@@ -10,7 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RoomForPersonMapper {
     RoomForPersonDTO toRoomForPersonDTO(RoomForPerson roomForPerson);
-
+    RoomForPerson toRoomForPerson(RoomForPersonDTO roomForPersonDTO);
     List<RoomForPersonDTO> toRoomForPersonDTOs(List<RoomForPerson> roomForPersons);
-
 }

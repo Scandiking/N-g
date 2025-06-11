@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -92,7 +93,7 @@ const Header = () => {
                         src="https://th.bing.com/th/id/R.3d3fb5d7fd683782784cb712de8d8c71?rik=eWBkaFbes%2fMRDQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fsmiley-face-png-transparent%2fsmiley-face-png-transparent-21.png&ehk=iSLreF%2fX7uU5Her%2fa5Z4Nej%2baPAjy2i5OR23iEGjOSY%3d&risl=&pid=ImgRaw&r=0"
                         onClick={handleAvatarClick}
                         sx={{cursor: 'pointer', marginLeft:"auto" }}
-                        />
+                    />
                 </Toolbar>
             </AppBar>
 
@@ -118,28 +119,36 @@ const Header = () => {
 
                     {/* OPTIONS LIST */}
                     <List>
-                        <ListItem button onClick={() => navigate('/profile')}>
-                            <ListItemIcon>
-                                <AccountCircle/>
-                            </ListItemIcon>
-                            <ListItemText primary="My account" />
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/profile')}>
+                                <ListItemIcon>
+                                    <AccountCircle/>
+                                </ListItemIcon>
+                                <ListItemText primary="My account" />
+                            </ListItemButton>
                         </ListItem>
-                        <ListItem button onClick={() => navigate('/Settings')}>
-                            <ListItemIcon>
-                                <SettingsIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Settings" />
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/Settings')}>
+                                <ListItemIcon>
+                                    <SettingsIcon/>
+                                </ListItemIcon>
+                                <ListItemText primary="Settings" />
+                            </ListItemButton>
                         </ListItem>
-                        <ListItem button onClick={() => navigate('TaskInfo')}>
-                            <ListItemIcon>
-                                <InfoIcon/>
-                            </ListItemIcon>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('TaskInfo')}>
+                                <ListItemIcon>
+                                    <InfoIcon/>
+                                </ListItemIcon>
+                            </ListItemButton>
                         </ListItem>
-                        <ListItem button onClick={() => navigate('Login')}>
-                            <ListItemIcon>
-                                <Logout/>
-                            </ListItemIcon>
-                            <ListItemText primary="Log out" />
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('Login')}>
+                                <ListItemIcon>
+                                    <Logout/>
+                                </ListItemIcon>
+                                <ListItemText primary="Log out" />
+                            </ListItemButton>
                         </ListItem>
                     </List>
                 </Box>
@@ -158,173 +167,176 @@ const Header = () => {
                 swipeAreaWidth={10}
                 anchor="left"
                 open={isDrawerOpen}
-                onClose={toggleDrawer(false)}>
+                onClose={toggleDrawer(false)}
+                onOpen={toggleDrawer(true)}>
 
                 {/* I sideskuffen er det en liste med valg*/}
                 <List>
-                    <ListItem
-                        button
-                        onClick = {() => {
-                            setIsDrawerOpen(false);
-                            navigate("/");
-                        }}
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick = {() => {
+                                setIsDrawerOpen(false);
+                                navigate("/");
+                            }}
                         >
-                        <ListItemIcon>
-                            <HomeIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Home"/>
+                            <ListItemIcon>
+                                <HomeIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Home"/>
+                        </ListItemButton>
                     </ListItem>
 
                     <Divider/>
 
-                    <ListItem
-                        // Legg til oppgave
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            toggleAddTaskModal(true);
-                            console.log('Add Task Modal open', isAddTaskModalOpen);
-                        }}
-                    >
-
-                        <ListItemIcon>
-                            <Badge
-                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                badgeContent={"+"}
-                            >
-                            <TaskIcon />
-                            </Badge>
-                        </ListItemIcon>
-                        <ListItemText primary="Add tasks" />
-                    </ListItem>
-                    <ListItem
-                        // Legg til folk
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            toggleAddPeopleModal(true);
-                        }}
-                    >
-                        <ListItemIcon>
-                            <Badge
-                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                badgeContent={"+"}
-                            >
-                            <PeopleIcon/>
-                                </Badge>
-                        </ListItemIcon>
-                        <ListItemText primary="Add people" />
-                    </ListItem>
-
-                    <ListItem
-                        button
-                        onClick={ () => {
-                            setIsDrawerOpen(false);
-                            toggleAddRoomsModal(true);
-                        }}
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                toggleAddTaskModal(true);
+                                console.log('Add Task Modal open', isAddTaskModalOpen);
+                            }}
                         >
-
-                        <ListItemIcon>
-                            <Badge
-                                anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                badgeContent={"+"}
-                            >
-                            <RoomIcon/>
+                            <ListItemIcon>
+                                <Badge
+                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                    badgeContent={"+"}
+                                >
+                                    <TaskIcon />
                                 </Badge>
-                        </ListItemIcon>
-                        <ListItemText primary="Add room"/>
+                            </ListItemIcon>
+                            <ListItemText primary="Add tasks" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                toggleAddPeopleModal(true);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <Badge
+                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                    badgeContent={"+"}
+                                >
+                                    <PeopleIcon/>
+                                </Badge>
+                            </ListItemIcon>
+                            <ListItemText primary="Add people" />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={ () => {
+                                setIsDrawerOpen(false);
+                                toggleAddRoomsModal(true);
+                            }}
+                        >
+                            <ListItemIcon>
+                                <Badge
+                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
+                                    badgeContent={"+"}
+                                >
+                                    <RoomIcon/>
+                                </Badge>
+                            </ListItemIcon>
+                            <ListItemText primary="Add room"/>
+                        </ListItemButton>
                     </ListItem>
 
                     <Divider/>
 
                     {/* TASKS */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/mytasks');
-                        }}
-                    >
-                        <ListItemIcon>
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                navigate('/mytasks');
+                            }}
+                        >
+                            <ListItemIcon>
                                 <TaskIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="My tasks" />
+                            </ListItemIcon>
+                            <ListItemText primary="My tasks" />
+                        </ListItemButton>
                     </ListItem>
 
                     {/* PEOPLE */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/mypeople');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <PeopleIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="My people" />
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                navigate('/mypeople');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <PeopleIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="My people" />
+                        </ListItemButton>
                     </ListItem>
 
                     {/* ROOMS */}
-                    <ListItem
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/myrooms');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <RoomIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="My rooms" />
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                navigate('/myrooms');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <RoomIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="My rooms" />
+                        </ListItemButton>
                     </ListItem>
 
                     <Divider/>
 
-                    <ListItem
-                        // Statistikk
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            console.log('Statistics clicked');
-                            navigate('/statistics');
-                        // Add nagivation or additional functionality here}
-                        }}
-                    >
-                        <ListItemIcon>
-                            <LeaderboardIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Statistics"/>
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                console.log('Statistics clicked');
+                                navigate('/statistics');
+                                // Add nagivation or additional functionality here}
+                            }}
+                        >
+                            <ListItemIcon>
+                                <LeaderboardIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="Statistics"/>
+                        </ListItemButton>
                     </ListItem>
 
-                    <ListItem
-                        // Betalinger
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            console.log('Betalinger');
-                            navigate('/payments');
-                        }}
-                    >
-
-                    <ListItemIcon>
-                        <PaymentsIcon/>
-                    </ListItemIcon>
-                    <ListItemText primary="Payments"/>
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                console.log('Betalinger');
+                                navigate('/payments');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <PaymentsIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="Payments"/>
+                        </ListItemButton>
                     </ListItem>
 
-                    <ListItem
-                        // Innstillinger
-                        button
-                        onClick={() => {
-                            setIsDrawerOpen(false);
-                            navigate('/settings');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <SettingsIcon/>
-                        </ListItemIcon>
-                        <ListItemText primary="Settings" />
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            onClick={() => {
+                                setIsDrawerOpen(false);
+                                navigate('/settings');
+                            }}
+                        >
+                            <ListItemIcon>
+                                <SettingsIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary="Settings" />
+                        </ListItemButton>
                     </ListItem>
 
                 </List>

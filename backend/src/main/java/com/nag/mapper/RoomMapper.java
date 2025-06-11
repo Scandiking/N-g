@@ -10,8 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface RoomMapper {
     RoomDTO toRoomDTO(Room room);
-
+    Room toRoom(RoomDTO roomDTO);
     List<RoomDTO> toRoomDTOs(List<Room> rooms);
-
-    // Custom mapping methods here
 }

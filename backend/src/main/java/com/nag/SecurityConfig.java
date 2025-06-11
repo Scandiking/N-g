@@ -2,7 +2,6 @@ package com.nag;
 
 // Ja, den skal ligge her og ikke i config.
 // Kristian
-// Hvorfor skal den ikke ligge i config-mappe, eller security? Gir ikke det bedre struktur og organisering?
 
 import com.nag.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,32 +57,13 @@ public class SecurityConfig {
     }
 
     // Add filterchain method (Hinkula, p. 109)
-    /* Endret litt  for å få tilgang til Swagger, Mia.
-    La til tillatelse (permitAll) for Swagger-endepunktene i filterChain() for å sikre at Swagger UI
-    og API-dokumentasjonen er tilgjengelig uten autentisering.
-    Dette er nødvendig for testing av API-er og dokumentasjone  til rapporten uten å måtte logge inn.
-     */
-
-    /**
-     *
-     * @param http HttpSecurity-objektet som brukes til å konfigurere sikkerhet
-     * @return Den ferdigbygde SecurityFilterChain som håndterer sikkerheten
-     * @throws Exception Kan kastes ved konfigurasjinsfeil i sikkerhet.
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable())
                 .cors(withDefaults())
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeHttpRequests) ->
-                        authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll()
-                                .requestMatchers(
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html"
-
-                                ). permitAll().anyRequest().authenticated()
-                ).addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
+                        authorizeHttpRequests.requestMatchers(HttpMethod.POST, "/login").permitAll().anyRequest().authenticated()).addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
 
 
         return http.build();

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Repository interface for managing Room entities.
@@ -17,15 +16,8 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Short> {
 
     /**
-     * Finds a room by its room ID.
-     *
-     * @param roomId the ID of the room
-     * @return Optional containing the room if found, otherwise empty
-     */
-    Optional<Room> findByRoomId(Short roomId);
-
-    /**
      * Finds all rooms by room name.
+     * Useful for finding rooms with exact name matches.
      *
      * @param roomName the name of the room
      * @return a list of rooms with the specified name
@@ -34,6 +26,7 @@ public interface RoomRepository extends JpaRepository<Room, Short> {
 
     /**
      * Finds all rooms containing the specified text in room name.
+     * Useful for search functionality with partial matching.
      *
      * @param roomName the text to search for in room names
      * @return a list of rooms containing the specified text in name
@@ -41,7 +34,8 @@ public interface RoomRepository extends JpaRepository<Room, Short> {
     List<Room> findByRoomNameContaining(String roomName);
 
     /**
-     * Finds all rooms by room admin.
+     * Finds all rooms administered by a specific person.
+     * Very useful for user-specific room management.
      *
      * @param roomAdmin the phone number of the room admin
      * @return a list of rooms administered by the specified person
@@ -49,33 +43,14 @@ public interface RoomRepository extends JpaRepository<Room, Short> {
     List<Room> findByRoomAdmin(String roomAdmin);
 
     /**
-     * Finds all rooms by room description.
-     *
-     * @param roomDescr the room description
-     * @return a list of rooms with the specified description
-     */
-    List<Room> findByRoomDescr(String roomDescr);
-
-    /**
      * Finds all rooms containing the specified text in room description.
+     * Useful for content-based room search.
      *
      * @param roomDescr the text to search for in room descriptions
      * @return a list of rooms containing the specified text in description
      */
     List<Room> findByRoomDescrContaining(String roomDescr);
 
-    /**
-     * Checks if a room exists by room ID.
-     *
-     * @param roomId the ID of the room
-     * @return true if the room exists, false otherwise
-     */
-    boolean existsByRoomId(Short roomId);
-
-    /**
-     * Deletes a room by room ID.
-     *
-     * @param roomId the ID of the room to delete
-     */
-    void deleteByRoomId(Short roomId);
+    // Valgfritt - hvis dere trenger exact description match:
+    // List<Room> findByRoomDescr(String roomDescr);
 }

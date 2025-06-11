@@ -5,8 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Data Transfer Object (DTO) for Task.
- *     This class is used to transfer task data between different layers of the application.
+ * Data Transfer Object (DTO) for Person.
+ *  This class is used to transfer person data between different layers of the application.
+ *
+ *
  *
  * @author Kristian
  */

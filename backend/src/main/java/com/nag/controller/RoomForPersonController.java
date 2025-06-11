@@ -66,13 +66,13 @@ public class RoomForPersonController {
     public ResponseEntity<RoomForPersonDTO> createRoomForPerson(@Valid @RequestBody RoomForPersonDTO roomForPersonDTO) {
         RoomForPersonDTO createdRoomForPerson = roomForPersonService.createRoomForPerson(roomForPersonDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(roomForPersonService.createRoomForPerson(roomForPersonDTO));
+                .body(createdRoomForPerson);  // Bruk variabelen i stedet for å kalle metoden på nytt (hjelp fra ChatGPT)
     }
 
     //
     // Method to update an existing RoomForPerson
     //
-    @PutMapping("/{roomId}/{personId}")
+    @PutMapping("/{roomId}/{phoneNo}")
     @Operation(summary = "Update an existing room for person", description = "Update the details of an existing room for person")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully updated room for person"),
@@ -80,23 +80,23 @@ public class RoomForPersonController {
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<RoomForPersonDTO> updateRoomForPerson(@PathVariable Short roomId, @PathVariable String personId, @Valid @RequestBody RoomForPersonDTO roomForPersonDTO) {
-        RoomForPersonDTO updatedRoomForPerson = roomForPersonService.updateRoomForPerson(roomId, personId, roomForPersonDTO);
+    public ResponseEntity<RoomForPersonDTO> updateRoomForPerson(@PathVariable Short roomId, @PathVariable String phoneNo, @Valid @RequestBody RoomForPersonDTO roomForPersonDTO) {
+        RoomForPersonDTO updatedRoomForPerson = roomForPersonService.updateRoomForPerson(roomId, phoneNo, roomForPersonDTO);
         return ResponseEntity.ok(updatedRoomForPerson);
     }
 
     //
     // Method to delete a RoomForPerson
     //
-    @DeleteMapping("/{roomForPersonId}")
+    @DeleteMapping("/{roomId}/{phoneNo}")
     @Operation(summary = "Delete a room for person", description = "Delete a room for person by its ID")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Successfully deleted room for person"),
             @ApiResponse(responseCode = "404", description = "Room for person not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Void> deleteRoomForPerson(@PathVariable Short roomId, @PathVariable String personId) {
-        roomForPersonService.deleteRoomForPerson(roomId, personId);
+    public ResponseEntity<Void> deleteRoomForPerson(@PathVariable Short roomId, @PathVariable String phoneNo) {
+        roomForPersonService.deleteRoomForPerson(roomId, phoneNo);
         return ResponseEntity.noContent().build();
     }
 }
