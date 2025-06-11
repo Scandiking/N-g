@@ -1,11 +1,4 @@
-/**
- * @author Kristian
- * @description Controller for managing notification frequency settings.
- * This class handles HTTP requests related to notification frequency.
- * It is currently empty and can be expanded with methods to handle specific endpoints.
- * Mest sannsynlig ubrukelig
- */
-
+// src/main/java/com/nag/controller/RoomForPersonController.java
 package com.nag.controller;
 
 import com.nag.dto.RoomForPersonDTO;
@@ -24,79 +17,83 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/roomforpersons")
-@Tag(name = "Room For Person Management", description = "Operations related to managing room for persons")
+@Tag(name = "Room For Person Management", description = "Operations related to managing room–person assignments")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class RoomForPersonController {
-    private final RoomForPersonService roomForPersonService;
 
+    private final RoomForPersonService service;
 
     @GetMapping
-    @Operation(summary = "Get all room for persons", description = "Retrieve a list of all room for persons")
+    @Operation(summary = "Get all room–person assignments")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of room for persons"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of assignments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<RoomForPersonDTO>> getAllRoomForPersons() {
-        return ResponseEntity.ok(roomForPersonService.getAllRoomForPersons());
+    public ResponseEntity<List<RoomForPersonDTO>> getAll() {
+        return ResponseEntity.ok(service.getAllRoomForPersons());
     }
 
     @GetMapping("/{roomId}/{phoneNo}")
-    @Operation(summary = "Get room for person by ID", description = "Retrieve a room for person by its ID")
+    @Operation(summary = "Get one room–person assignment")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved room for person"),
-            @ApiResponse(responseCode = "404", description = "Room for person not found"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved assignment"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<RoomForPersonDTO> getRoomForPersonById(@PathVariable Short roomId, @PathVariable String phoneNo) {
-        RoomForPersonDTO roomForPersonDTO = roomForPersonService.getRoomForPersonById(roomId, phoneNo);
-        return ResponseEntity.ok(roomForPersonDTO);
+    public ResponseEntity<RoomForPersonDTO> getOne(
+            @PathVariable Short roomId,
+            @PathVariable String phoneNo
+    ) {
+        RoomForPersonDTO dto = service.getRoomForPersonById(roomId, phoneNo);
+        return ResponseEntity.ok(dto);
     }
 
-    //
-    // Method to POST a new RoomForPerson
-    //
     @PostMapping
-    @Operation(summary = "Create a new roomForPerson", description = "Create a new room for person with the provided details")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new room–person assignment")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Successfully created room for person"),
+            @ApiResponse(responseCode = "201", description = "Successfully created assignment"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<RoomForPersonDTO> createRoomForPerson(@Valid @RequestBody RoomForPersonDTO roomForPersonDTO) {
-        RoomForPersonDTO createdRoomForPerson = roomForPersonService.createRoomForPerson(roomForPersonDTO);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(createdRoomForPerson);  // Bruk variabelen i stedet for å kalle metoden på nytt (hjelp fra ChatGPT)
+    public ResponseEntity<RoomForPersonDTO> create(
+            @Valid @RequestBody RoomForPersonDTO dto
+    ) {
+        RoomForPersonDTO created = service.createRoomForPerson(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    //
-    // Method to update an existing RoomForPerson
-    //
     @PutMapping("/{roomId}/{phoneNo}")
-    @Operation(summary = "Update an existing room for person", description = "Update the details of an existing room for person")
+    @Operation(summary = "Update an existing room–person assignment")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully updated room for person"),
-            @ApiResponse(responseCode = "404", description = "Room for person not found"),
+            @ApiResponse(responseCode = "200", description = "Successfully updated assignment"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found"),
             @ApiResponse(responseCode = "400", description = "Invalid input data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<RoomForPersonDTO> updateRoomForPerson(@PathVariable Short roomId, @PathVariable String phoneNo, @Valid @RequestBody RoomForPersonDTO roomForPersonDTO) {
-        RoomForPersonDTO updatedRoomForPerson = roomForPersonService.updateRoomForPerson(roomId, phoneNo, roomForPersonDTO);
-        return ResponseEntity.ok(updatedRoomForPerson);
+    public ResponseEntity<RoomForPersonDTO> update(
+            @PathVariable Short roomId,
+            @PathVariable String phoneNo,
+            @Valid @RequestBody RoomForPersonDTO dto
+    ) {
+        RoomForPersonDTO updated = service.updateRoomForPerson(roomId, phoneNo, dto);
+        return ResponseEntity.ok(updated);
     }
 
-    //
-    // Method to delete a RoomForPerson
-    //
     @DeleteMapping("/{roomId}/{phoneNo}")
-    @Operation(summary = "Delete a room for person", description = "Delete a room for person by its ID")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a room–person assignment")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Successfully deleted room for person"),
-            @ApiResponse(responseCode = "404", description = "Room for person not found"),
+            @ApiResponse(responseCode = "204", description = "Successfully deleted assignment"),
+            @ApiResponse(responseCode = "404", description = "Assignment not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Void> deleteRoomForPerson(@PathVariable Short roomId, @PathVariable String phoneNo) {
-        roomForPersonService.deleteRoomForPerson(roomId, phoneNo);
+    public ResponseEntity<Void> delete(
+            @PathVariable Short roomId,
+            @PathVariable String phoneNo
+    ) {
+        service.deleteRoomForPerson(roomId, phoneNo);
         return ResponseEntity.noContent().build();
     }
 }

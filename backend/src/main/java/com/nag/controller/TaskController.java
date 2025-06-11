@@ -1,8 +1,4 @@
-/**
- * TaskController.java
- * Controller for managing task-related operations.
- */
-
+// src/main/java/com/nag/controller/TaskController.java
 package com.nag.controller;
 
 import com.nag.model.AppUser;
@@ -10,7 +6,6 @@ import com.nag.model.Task;
 import com.nag.repository.AppUserRepository;
 import com.nag.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -28,8 +24,6 @@ public class TaskController {
 
     /**
      * Retrieves all tasks.
-     *
-     * @return a list of all tasks
      */
     @GetMapping
     public List<Task> getAllTasks() {
@@ -38,9 +32,6 @@ public class TaskController {
 
     /**
      * Retrieves a task by its ID.
-     *
-     * @param id the ID of the task
-     * @return the task with the specified ID, or 404 if not found
      */
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
@@ -51,14 +42,11 @@ public class TaskController {
 
     /**
      * Creates a new task.
-     *
-     * @param task the task to create
-     * @return the created task with status 201
      */
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task, Authentication auth) {
-        AppUser user = appUserRepository.
-                findByUsername(auth.getName())
+        AppUser user = appUserRepository
+                .findByUsername(auth.getName())
                 .orElseThrow();
         task.setPerson(user.getPerson());
         task.setCreator(user.getPerson().getPhoneNo());
@@ -68,10 +56,6 @@ public class TaskController {
 
     /**
      * Updates an existing task.
-     *
-     * @param id   the ID of the task to update
-     * @param task the updated task data
-     * @return the updated task with status 200, or 404 if not found
      */
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody Task task) {
@@ -86,9 +70,6 @@ public class TaskController {
 
     /**
      * Deletes a task by its ID.
-     *
-     * @param id the ID of the task to delete
-     * @return 204 No Content if successful, or 404 if not found
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Integer id) {
@@ -102,13 +83,22 @@ public class TaskController {
 
     /**
      * Checks if a task exists by its ID.
-     *
-     * @param id the ID of the task
-     * @return true if the task exists, false otherwise
      */
     @GetMapping("/exists/{id}")
     public ResponseEntity<Boolean> taskExists(@PathVariable Integer id) {
         boolean exists = taskRepository.existsById(id);
         return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
+
+    /**
+     * Marks a task as completed.
+     */
+    @PutMapping("/{id}/done")
+    public ResponseEntity<Task> markTaskDone(@PathVariable Integer id) {
+        Task t = taskRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Task not found: " + id));
+        t.setCompleted(true);
+        Task saved = taskRepository.save(t);
+        return ResponseEntity.ok(saved);
     }
 }

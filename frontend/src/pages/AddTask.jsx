@@ -1,3 +1,4 @@
+// src/pages/AddTask.jsx
 import React, { useState, useEffect } from 'react';
 import {
     Box,
@@ -20,7 +21,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import { LocalizationProvider, DatePicker, TimeClock } from '@mui/x-date-pickers';
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 const AddTask = ({ open, onClose }) => {
@@ -61,10 +62,8 @@ const AddTask = ({ open, onClose }) => {
                         : token || ''
                 }
             });
-
             if (response.ok) {
-                const roomData = await response.json();
-                setRooms(roomData);
+                setRooms(await response.json());
             }
         } catch (error) {
             console.error('Error fetching rooms:', error);
@@ -81,10 +80,8 @@ const AddTask = ({ open, onClose }) => {
                         : token || ''
                 }
             });
-
             if (response.ok) {
-                const peopleData = await response.json();
-                setPeople(peopleData);
+                setPeople(await response.json());
             }
         } catch (error) {
             console.error('Error fetching people:', error);
@@ -106,40 +103,26 @@ const AddTask = ({ open, onClose }) => {
 
     const assignTask = async () => {
         if (!taskTitle.trim()) {
-            setSnackbar({
-                open: true,
-                message: 'Please provide a task title',
-                severity: 'error'
-            });
+            setSnackbar({ open: true, message: 'Please provide a task title', severity: 'error' });
             return;
         }
-
         if (!selectedPerson) {
-            setSnackbar({
-                open: true,
-                message: 'Please assign the task to a person',
-                severity: 'error'
-            });
+            setSnackbar({ open: true, message: 'Please assign the task to a person', severity: 'error' });
             return;
         }
 
         setLoading(true);
-
         try {
-            // First create the task
+            // Create the task
             const taskData = {
                 title: taskTitle.trim(),
                 description: taskDescription.trim(),
-                dueDate: customDates[0] ? customDates[0].toISOString() : null,
-                notiFreqId: parseInt(notificationType), // Convert to Short
+                dueDate: customDates[0]?.toISOString() || null,
+                notiFreqId: parseInt(notificationType),
                 completed: false
-                // creator is set automatically in TaskController via Authentication
             };
-
             let token = localStorage.getItem('token');
-            if (token && !token.startsWith('Bearer ')) {
-                token = 'Bearer ' + token;
-            }
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
 
             const taskResponse = await fetch('http://localhost:8080/api/tasks', {
                 method: 'POST',
@@ -149,43 +132,29 @@ const AddTask = ({ open, onClose }) => {
                 },
                 body: JSON.stringify(taskData),
             });
-
             if (!taskResponse.ok) {
                 const errorText = await taskResponse.text();
                 throw new Error(`Failed to create task: ${taskResponse.status} - ${errorText}`);
             }
-
             const createdTask = await taskResponse.json();
-            console.log('Task created:', createdTask);
 
-            // If a specific person is selected (not "Everyone in room"), assign task to person
+            // Assign to person or room
             if (selectedPerson !== 'Everyone in room') {
-                const personPhoneNo = typeof selectedPerson === 'object'
+                const phoneNo = typeof selectedPerson === 'object'
                     ? selectedPerson.phoneNo
                     : selectedPerson;
-
-                await assignTaskToPerson(createdTask.taskId, personPhoneNo);
-            } else if (selectedRoom && selectedPerson === 'Everyone in room') {
-                // Assign task to everyone in the selected room
+                await assignTaskToPerson(createdTask.taskId, phoneNo);
+            } else {
                 await assignTaskToRoom(createdTask.taskId, selectedRoom);
             }
 
-            // Reset form on success
             resetForm();
-            setSnackbar({
-                open: true,
-                message: 'Task created and assigned successfully!',
-                severity: 'success'
-            });
+            setSnackbar({ open: true, message: 'Task created and assigned successfully!', severity: 'success' });
             onClose();
 
         } catch (error) {
             console.error('Error creating task:', error);
-            setSnackbar({
-                open: true,
-                message: `Failed to create task: ${error.message}`,
-                severity: 'error'
-            });
+            setSnackbar({ open: true, message: `Failed to create task: ${error.message}`, severity: 'error' });
         } finally {
             setLoading(false);
         }
@@ -193,30 +162,18 @@ const AddTask = ({ open, onClose }) => {
 
     const assignTaskToPerson = async (taskId, phoneNo) => {
         try {
-            const assignmentData = {
-                taskId: taskId,
-                phoneNo: phoneNo
-            };
-
+            const dto = { taskId, phoneNo };
             let token = localStorage.getItem('token');
-            if (token && !token.startsWith('Bearer ')) {
-                token = 'Bearer ' + token;
-            }
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
 
-            const response = await fetch('http://localhost:8080/api/taskforpersons', {
+            await fetch('http://localhost:8080/api/taskforpersons', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': token || ''
                 },
-                body: JSON.stringify(assignmentData)
+                body: JSON.stringify(dto)
             });
-
-            if (!response.ok) {
-                console.warn('Failed to assign task to person:', response.status);
-            } else {
-                console.log('Task assigned to person successfully');
-            }
         } catch (error) {
             console.error('Error assigning task to person:', error);
         }
@@ -224,21 +181,19 @@ const AddTask = ({ open, onClose }) => {
 
     const assignTaskToRoom = async (taskId, roomId) => {
         try {
-            // Get all people in the room
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:8080/api/roomforpersons?roomId=${roomId}`, {
+            const response = await fetch('http://localhost:8080/api/roomforpersons', {
                 headers: {
                     'Authorization': token && !token.startsWith('Bearer ')
                         ? `Bearer ${token}`
                         : token || ''
                 }
             });
-
             if (response.ok) {
-                const roomPeople = await response.json();
-                // Assign task to each person in the room
-                for (const roomPerson of roomPeople) {
-                    await assignTaskToPerson(taskId, roomPerson.phoneNo);
+                const allAssignments = await response.json();
+                const roomPeople = allAssignments.filter(rp => rp.roomId === roomId);
+                for (const rp of roomPeople) {
+                    await assignTaskToPerson(taskId, rp.phoneNo);
                 }
             }
         } catch (error) {
@@ -258,26 +213,13 @@ const AddTask = ({ open, onClose }) => {
     };
 
     const handleCloseSnackbar = () => {
-        setSnackbar({ ...snackbar, open: false });
+        setSnackbar(prev => ({ ...prev, open: false }));
     };
 
-    // Get people options based on selected room
     const getPeopleOptions = () => {
-        let options = [];
-
-        if (selectedRoom) {
-            // Filter people by selected room (you might need to implement this logic)
-            options = people.filter(person => {
-                // This would require checking room-person relationships
-                // For now, show all people
-                return true;
-            });
-            options.push('Everyone in room');
-        } else {
-            options = people;
-        }
-
-        return options;
+        if (!selectedRoom) return people;
+        const options = people.filter(() => true); // refine if needed
+        return [...options, 'Everyone in room'];
     };
 
     return (
@@ -285,103 +227,94 @@ const AddTask = ({ open, onClose }) => {
             <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Add a new task</DialogTitle>
                 <DialogContent>
-                    <Box sx={{display: 'flex', flexDirection: 'column', gap: 2, mt: 1}}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                         <Tooltip title="Adds a title to your task">
                             <TextField
                                 label="Task title"
                                 value={taskTitle}
                                 onChange={e => setTaskTitle(e.target.value)}
-                                required
-                                fullWidth
-                                disabled={loading}
+                                required fullWidth disabled={loading}
                             />
                         </Tooltip>
 
                         <Tooltip title="Details">
                             <TextField
                                 label="Task description"
-                                multiline
-                                rows={3}
+                                multiline rows={3}
                                 value={taskDescription}
                                 onChange={e => setTaskDescription(e.target.value)}
-                                fullWidth
-                                disabled={loading}
+                                fullWidth disabled={loading}
                             />
                         </Tooltip>
 
                         <FormControl disabled={loading}>
                             <FormLabel>Notification schedule</FormLabel>
                             <RadioGroup value={notificationType} onChange={e => setNotificationType(e.target.value)}>
-                                <FormControlLabel value="1" control={<Radio/>} label="Næg classic"/>
-                                <FormControlLabel value="2" control={<Radio/>} label="Easy"/>
-                                <FormControlLabel value="3" control={<Radio/>} label="Medium"/>
-                                <FormControlLabel value="4" control={<Radio/>} label="Obnoxious"/>
-                                <FormControlLabel value="5" control={<Radio/>} label="Custom"/>
+                                <FormControlLabel value="1" control={<Radio />} label="Næg classic" />
+                                <FormControlLabel value="2" control={<Radio />} label="Easy" />
+                                <FormControlLabel value="3" control={<Radio />} label="Medium" />
+                                <FormControlLabel value="4" control={<Radio />} label="Obnoxious" />
+                                <FormControlLabel value="5" control={<Radio />} label="Custom" />
                             </RadioGroup>
                         </FormControl>
 
                         <Collapse in={notificationType === '5'}>
-                            <Box sx={{mt: 2, p: 2, border: '1px solid #ddd', borderRadius: 2}}>
+                            <Box sx={{ mt: 2, p: 2, border: '1px solid #ddd', borderRadius: 2 }}>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DatePicker
                                         label="Select date"
                                         value={currentDate}
                                         onChange={setCurrentDate}
-                                        sx={{mb: 1, width: '100%'}}
                                         disabled={loading}
+                                        sx={{ mb: 1, width: '100%' }}
                                     />
                                     <TimeClock
                                         value={currentTime}
                                         onChange={setCurrentTime}
                                         ampm={false}
-                                        sx={{mb: 1}}
                                         disabled={loading}
+                                        sx={{ mb: 1 }}
                                     />
                                 </LocalizationProvider>
-                                <Button
-                                    variant="outlined"
-                                    onClick={addCustom}
-                                    disabled={loading || !currentDate || !currentTime}
-                                >
+                                <Button variant="outlined" onClick={addCustom} disabled={loading || !currentDate || !currentTime}>
                                     Add notification
                                 </Button>
-                                <Box sx={{mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1}}>
-                                    {customDates.map((d, i) =>
+                                <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                    {customDates.map((d, i) => (
                                         <Chip
                                             key={i}
                                             label={d.format('DD-MM-YYYY HH:mm')}
                                             onDelete={() => removeDate(d)}
                                             disabled={loading}
                                         />
-                                    )}
+                                    ))}
                                 </Box>
                             </Box>
                         </Collapse>
 
                         <Autocomplete
                             options={rooms}
-                            getOptionLabel={(option) => option.roomName || option}
+                            getOptionLabel={opt => opt.roomName || opt}
                             value={selectedRoom}
                             onChange={(e, v) => {
                                 setSelectedRoom(v?.roomId || v || '');
-                                setSelectedPerson(''); // Reset person selection when room changes
+                                setSelectedPerson('');
                             }}
                             disabled={loading}
-                            renderInput={p => <TextField {...p} label="Room" />}
+                            renderInput={params => <TextField {...params} label="Room" />}
                         />
 
                         <Autocomplete
                             options={getPeopleOptions()}
-                            getOptionLabel={(option) => {
-                                if (option === 'Everyone in room') return option;
-                                return typeof option === 'object'
-                                    ? `${option.firstName} ${option.lastName}`
-                                    : option;
-                            }}
+                            getOptionLabel={opt =>
+                                opt === 'Everyone in room'
+                                    ? opt
+                                    : `${opt.firstName} ${opt.lastName}`
+                            }
                             value={selectedPerson}
                             onChange={(e, v) => setSelectedPerson(v)}
                             disabled={loading}
-                            renderInput={p => <TextField {...p} label="Assign to" required />}
+                            renderInput={params => <TextField {...params} label="Assign to" required />}
                         />
 
                         <Button
@@ -390,31 +323,22 @@ const AddTask = ({ open, onClose }) => {
                             disabled={loading || !taskTitle.trim() || !selectedPerson}
                             sx={{ mt: 2 }}
                         >
-                            {loading ? (
-                                <>
-                                    <CircularProgress size={20} sx={{ mr: 1 }} />
-                                    Creating task...
-                                </>
-                            ) : (
-                                'Add task'
-                            )}
+                            {loading
+                                ? <><CircularProgress size={20} sx={{ mr: 1 }} /> Creating task...</>
+                                : 'Add task'}
                         </Button>
                     </Box>
                 </DialogContent>
             </Dialog>
 
-            {/* Success/Error feedback */}
+            {/* Feedback */}
             <Snackbar
                 open={snackbar.open}
                 autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             >
-                <Alert
-                    onClose={handleCloseSnackbar}
-                    severity={snackbar.severity}
-                    sx={{ width: '100%' }}
-                >
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
                     {snackbar.message}
                 </Alert>
             </Snackbar>
