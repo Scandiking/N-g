@@ -56,13 +56,12 @@
             <artifactId>lombok-mapstruct-binding</artifactId>
             <version>0.2.0</version>
         </dependency>
-        <!-- Swagger/OpenAPI - Midlertidig fjernet for å få applikasjonen til å starte
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.2.0</version>
         </dependency>
-        -->
+
         <!-- PostgreSQL -->
         <dependency>
             <groupId>org.postgresql</groupId>
