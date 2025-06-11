@@ -54,15 +54,27 @@ public class Task {
 
     /**
      * Relation to notification frequency for this task.
+     * Read-only mapping to avoid duplicating the noti_freq_id column.
      */
     @ManyToOne
-    @JoinColumn(name = "noti_freq_id", referencedColumnName = "noti_freq_id")
+    @JoinColumn(
+            name = "noti_freq_id",
+            referencedColumnName = "noti_freq_id",
+            insertable = false,
+            updatable = false
+    )
     private NotiFreq notiFreq;
 
     /**
      * Relation to the person who created this task.
+     * Read-only mapping to avoid duplicating the creator column.
      */
     @ManyToOne
-    @JoinColumn(name = "creator", referencedColumnName = "phone_no")
+    @JoinColumn(
+            name = "creator",
+            referencedColumnName = "phone_no",
+            insertable = false,
+            updatable = false
+    )
     private Person person;
 }
