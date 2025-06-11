@@ -1,8 +1,8 @@
+// src/main/java/com/nag/service/TaskForPersonService.java
 package com.nag.service;
 
 import com.nag.dto.TaskForPersonDTO;
 import com.nag.model.TaskForPerson;
-import com.nag.model.TaskForPersonId;
 import com.nag.repository.TaskForPersonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,8 @@ public class TaskForPersonService {
 
     @Transactional
     public TaskForPersonDTO assignTaskToPerson(TaskForPersonDTO dto) {
-        TaskForPersonId id = new TaskForPersonId(dto.getTaskId(), dto.getPhoneNo());
-        TaskForPerson entity = new TaskForPerson();
-        entity.setId(id);
+        // Use the two-arg constructor (sets taskId & phoneNo)
+        TaskForPerson entity = new TaskForPerson(dto.getTaskId(), dto.getPhoneNo());
         repository.save(entity);
         return dto;
     }
