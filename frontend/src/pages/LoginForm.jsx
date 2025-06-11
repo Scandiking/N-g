@@ -8,12 +8,16 @@ const LoginForm = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    {/* Asynchronous process to wait for fetching the token by posting the username and pw to /login */
+    }
     const handleLogin = async () => {
         const response = await fetch('http://localhost:8080/login', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username, password}),
         });
+        {/* If the response is ok, the token is set to localStorage */
+        }
         if (response.ok) {
             const token = response.headers.get('Authorization');
             // Store token for later use (e.g. localStorage)
@@ -21,8 +25,8 @@ const LoginForm = () => {
             // Redirect or update UI as needed
             navigate('/mytasks');
         } else {
-            // Handle error
-            alert('Login failed');
+            // Else user gets a HCI-like browser alert.
+            alert('Login failed. The account either does not exist or you entered the wrong credentials.');
         }
     };
 
@@ -45,8 +49,8 @@ const LoginForm = () => {
                     margin="normal"
                 />
             </Box>
-            <Stack spacing={2} direction="row" justifyContent="center">
-                <Button variant="outlined" size="large" onClick={handleLogin}>
+            <Stack spacing={0} direction="row" justifyContent="center">
+                <Button variant="contained" onClick={handleLogin}>
                     Log in
                 </Button>
             </Stack>

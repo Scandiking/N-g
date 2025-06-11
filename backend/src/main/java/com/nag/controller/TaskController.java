@@ -5,20 +5,26 @@
 
 package com.nag.controller;
 
+import com.nag.model.AppUser;
 import com.nag.model.Task;
+import com.nag.repository.AppUserRepository;
 import com.nag.repository.TaskRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
+@RequiredArgsConstructor
 public class TaskController {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final AppUserRepository appUserRepository;
 
     /**
      * Retrieves all tasks.
@@ -50,15 +56,20 @@ public class TaskController {
      * @return the created task with status 201
      */
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        Task savedTask = taskRepository.save(task);
-        return new ResponseEntity<>(savedTask, HttpStatus.CREATED);
+    public ResponseEntity<Task> createTask(@RequestBody Task task, Authentication auth) {
+        AppUser user = appUserRepository.
+                findByUsername(auth.getName())
+                .orElseThrow();
+        task.setPerson(user.getPerson());
+        task.setCreator(user.getPerson().getPhoneNo());
+        Task saved = taskRepository.save(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     /**
      * Updates an existing task.
      *
-     * @param id the ID of the task to update
+     * @param id   the ID of the task to update
      * @param task the updated task data
      * @return the updated task with status 200, or 404 if not found
      */

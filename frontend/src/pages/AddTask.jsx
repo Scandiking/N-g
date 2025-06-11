@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import {LocalizationProvider, DatePicker, TimeClock} from '@mui/x-date-pickers';
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from 'dayjs';
 
 
 const AddTask = ({open, onClose}) => {
@@ -28,167 +29,114 @@ const AddTask = ({open, onClose}) => {
     const [customDates, setCustomDates] = useState([]);
     const [currentDate, setCurrentDate] = useState(null);
     const [currentTime, setCurrentTime] = useState(null);
-    const [requireProof, setRequireProof] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState('');
     const [selectedPerson, setSelectedPerson] = useState('');
 
-    const handleAddCustomDate = () => {
+    const addCustom = () => {
         if (currentDate && currentTime) {
-            const combinedDateTime = currentDate.hour(currentTime.hour())
-            setCustomDates([...customDates, combinedDateTime]);
+            const dt = currentDate
+                .set('hour', currentTime.hour())
+                .set('minute', currentTime.minute());
+            setCustomDates([...customDates, dt]);
             setCurrentDate(null);
             setCurrentTime(null);
         }
     };
+    const removeDate = d => setCustomDates(customDates.filter(x => x !== d));
 
-    const handleRemoveDate = (dateToRemove) => {
-        setCustomDates(customDates.filter(date => date !== dateToRemove))
-    };
-
-    const AssignTask = () => {
+    // Create and assign task in one POST request (industry standard
+    const assignTask = async () => {
         if (!taskTitle || !selectedPerson) {
-            alert('Please provide a task title and assign it to a person.');
+            alert("Please provide a task title and assign it to a person.");
             return;
         }
 
-        const task = {
+        const body = {
             title: taskTitle,
             description: taskDescription,
-            notificationType,
-            customDates,
-            room: selectedRoom,
-            assignedTo: selectedPerson,
-            requireProof,
+            notiFreqId: notificationType,
+            dueDate: customDates[0] ? customDates[0].toISOString() : null
         };
 
-        console.log('Task assigned:', task);
+        try {
+            let token = localStorage.getItem('token');
+            if (token && !token.startsWith('Bearer ')) token = 'Bearer ' + token;
 
-        // Eksempel: send task to backend API
-        // fetch('/api/tasks', {
-        //    method: 'POST',
-        //    headers: { 'Content-Type': 'application/json' },
-        //    body: JSON.stringify(task),
-        // })
-        //    .then(response => response.json())
-        //    .then(data => console.log('Task saved:', data))
-        //   .catch(error => console.error('Error saving task:', error));
+            const res = await fetch('http:localhost:8080/api/tasks', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'Authorization': token},
+                body: JSON.stringify(body),
+            });
+            if (!res.ok) throw new Error(`Server svarte ${res.status}`);
 
-        // Clear the form
-        setTaskTitle('');
-        setTaskDescription('');
-        setNotificationType('1');
-        setCustomDates([]);
-        setSelectedRoom('');
-        setSelectedPerson('');
-        setRequireProof(false);
-
-        onClose();
+            // rydd skjema
+            setTaskTitle('');
+            setTaskDescription('');
+            setNotificationType('1');
+            setCustomDates([]);
+            setSelectedRoom('');
+            setSelectedPerson('');
+            onClose();
+        } catch (e) {
+            alert(e.message);
+        }
     };
 
+
     return (
-
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-
-            <DialogTitle>Add a New Task</DialogTitle>
+            <DialogTitle>Add a new task</DialogTitle>
             <DialogContent>
-
-                <Box component="form" sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-                    <Tooltip placement="top" title="Adds a title to your task" arrow>
-                        <TextField
-                            label="Task Title"
-                            variant="outlined"
-                            value={taskTitle}
-                            onChange={(e) => setTaskTitle(e.target.value)}
-                            fullWidth
-                            required
-                        />
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
+                    <Tooltip title="Adds a title to your task"><TextField
+                        label="Task title" value={taskTitle} onChange={e => setTaskTitle(e.target.value)} required
+                        fullWidth/>
                     </Tooltip>
 
-                    <Tooltip placement="top" title="Lets you specify details about the task" arrow>
-                        <TextField
-                            label="Task Description"
-                            variant="outlined"
-                            value={taskDescription}
-                            onChange={(e) => setTaskDescription(e.target.value)}
-                            multiline
-                            rows={4}
-                            fullWidth
-                        />
+                    <Tooltip title="Details"><TextField
+                        label="Task description" multiline rows={3}
+                        value={taskDescription} onChange={e => setTaskDescription(e.target.value)} fullWidth/>
                     </Tooltip>
 
-                    {/* NOTIFICATION FREQUENCY */}
                     <FormControl>
                         <FormLabel>Notification schedule</FormLabel>
-                        <RadioGroup value={notificationType} onChange={(e) => setNotificationType(e.target.value)}>
-                            <Tooltip title="Ramping up notification frequency exponentially" arrow>
-                                <FormControlLabel value="1" control={<Radio/>} label="Næg Classic"/>
-                            </Tooltip>
-                            <Tooltip title="Once a day" arrow>
-                                <FormControlLabel value="2" control={<Radio/>} label="Easy"/>
-                            </Tooltip>
-                            <Tooltip title="Every three hours" arrow>
-                                <FormControlLabel value="3" control={<Radio/>} label="Medium"/>
-                            </Tooltip>
-                            <Tooltip title="Every 15 minutes" arrow>
-                                <FormControlLabel value="4" control={<Radio/>} label="Obnoxious"/>
-                            </Tooltip>
-                            <Tooltip title="Customize notification schedule" arrow>
-                                <FormControlLabel value="5" control={<Radio/>} label="Custom..."/>
-                            </Tooltip>
+                        <RadioGroup value={notificationType} onChange={e => setNotificationType(e.target.value)}>
+                            <FormControlLabel value="1" control={<Radio/>} label="Næg classic"/>
+                            <FormControlLabel value="2" control={<Radio/>} label="Easy"/>
+                            <FormControlLabel value="3" control={<Radio/>} label="Medium"/>
+                            <FormControlLabel value="4" control={<Radio/>} label="Obnoxious"/>
+                            <FormControlLabel value="5" control={<Radio/>} label="Custom"/>
                         </RadioGroup>
                     </FormControl>
 
-                    {/* CUSTOM NOTIFICATION SECTION */}
-                    <Collapse in={notificationType === "5"}>
-                        <Box sx={{mt: 2, p: 2, border: "1px solid #ddd", borderRadius: 2}}>
+                    <Collapse in={notificationType === '5'}>
+                        <Box sx={{mt: 2, p: 2, border: '1px solid #ddd', borderRadius: 2}}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DatePicker label="Select Date" value={currentDate} onChange={setCurrentDate}
-                                            sx={{width: "100%"}}/>
-                                <TimeClock value={currentTime} onChange={setCurrentTime} sx={{width: "100%"}}
-                                           ampm={false}/>
+                                <DatePicker label="Select date" value={currentDate} onChange={setCurrentDate}
+                                            sx={{mb: 1, width: '100%'}}/>
+                                <TimeClock value={currentTime} onChange={setCurrentTime} ampm={false} sx={{mb: 1}}/>
                             </LocalizationProvider>
-                            <Button sx={{mt: 2}} variant="outlined" onClick={handleAddCustomDate}>Add
-                                Notification</Button>
-                            <Box sx={{mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1}}>
-                                {customDates.map((date, index) => (
-                                    <Chip key={index} label={date.format('DD-MM-YYYY HH:mm')}
-                                          onDelete={() => handleRemoveDate(date)}/>
-                                ))}
+                            <Button variant="outlined" onClick={addCustom}>Add notification</Button>
+                            <Box sx={{mt: 1, display: 'flex', flexWrap: 'wrap', gap: 1}}>
+                                {customDates.map((d, i) =>
+                                    <Chip key={i} label={d.format('DD-MM-YYYY HH:mm')} onDelete={() => removeDate(d)}/>
+                                )}
                             </Box>
                         </Box>
                     </Collapse>
 
-                    {/* ROOM TASK ASSIGNED TO */}
-                    <Tooltip title="Which room is the task meant for?" placement="top" arrow>
-                        <Autocomplete
-                            disablePortal
-                            options={['Dormitory', 'Campus group']}
-                            fullWidth
-                            required
-                            renderInput={(params) => <TextField {...params} label="Room"/>}
-                        />
-                    </Tooltip>
+                    <Autocomplete options={['Dormitory', 'Campus group']}
+                                  value={selectedRoom} onChange={(e, v) => setSelectedRoom(v)}
+                                  renderInput={p => <TextField {...p} label="Room" required/>}/>
 
-                    {/* PERSON TASK IS ASSIGNED TO */}
-                    <Tooltip title="Which person is the task assigned to?" placement="top" arrow>
-                        <Autocomplete
-                            disablePortal
-                            options={['Jonas', 'Kenneth', 'Kristian', 'Lucas', 'Mia', 'Everyone in room']}
-                            fullWidth
-                            required
-                            renderInput={(params) => <TextField {...params} label="Persons"/>}
-                        />
-                    </Tooltip>
+                    <Autocomplete options={['Jonas', 'Kenneth', 'Kristian', 'Lucas', 'Mia', 'Everyone in room']}
+                                  value={selectedPerson} onChange={(e, v) => setSelectedPerson(v)}
+                                  renderInput={p => <TextField {...p} label="Person" required/>}/>
 
 
-                    <Tooltip title="Lets user know about the task" placement="top" arrow>
-                        <Button variant="contained" color="primary" onClick={onClose}>
-                            Add Task
-                        </Button>
-                    </Tooltip>
+                    <Button variant="contained" onClick={assignTask}>Add task</Button>
                 </Box>
             </DialogContent>
-
         </Dialog>
 
     );
