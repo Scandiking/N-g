@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author []
  */
 @Entity
-@Table(name = "tasks")
+@Table(name = "task")
 @Data
 @NoArgsConstructor
 public class Task {
