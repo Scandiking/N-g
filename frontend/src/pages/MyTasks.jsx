@@ -31,7 +31,7 @@ import {
 // Sample tasks data
 const sampleTasks = [
     {
-        taskId: 9001,  // ✅ ENDRET: Høye tall som ikke kolliderer med backend
+        taskId: 9001,
         taskName: "Clean kitchen",
         taskDescription: "Deep clean the kitchen including appliances",
         status: "pending",
@@ -40,7 +40,7 @@ const sampleTasks = [
         assignedTo: null
     },
     {
-        taskId: 9002,  // ✅ ENDRET
+        taskId: 9002,
         taskName: "Fix washing machine",
         taskDescription: "The washing machine is making strange noises",
         status: "in_progress",
@@ -49,22 +49,13 @@ const sampleTasks = [
         assignedTo: "Ingrid Hansen"
     },
     {
-        taskId: 9003,  // ✅ ENDRET
+        taskId: 9003,
         taskName: "Organize study group",
         taskDescription: "Plan weekly study sessions for the group",
         status: "completed",
         priority: "low",
         dueDate: "2025-06-10",
         assignedTo: "Magnus Lund"
-    },
-    {
-        taskId: 9004,  // ✅ ENDRET
-        taskName: "Buy groceries",
-        taskDescription: "Weekly grocery shopping for shared items",
-        status: "pending",
-        priority: "medium",
-        dueDate: "2025-06-14",
-        assignedTo: null
     }
 ];
 
@@ -333,12 +324,13 @@ const MyTasks = ({ refreshTrigger }) => {
                                 height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                border: isUserCreated(task) ? '2px solid #4caf50' : '1px solid #e0e0e0'
+                                border: isUserCreated(task) ? '2px solid #4caf50' : '2px solid #ff9800',
+                                backgroundColor: isUserCreated(task) ? 'white' : '#fff3e0'
                             }}
                         >
                             <CardContent sx={{ flexGrow: 1 }}>
                                 {/* User-created indicator */}
-                                {isUserCreated(task) && (
+                                {isUserCreated(task) ? (
                                     <Chip
                                         label="Your Task"
                                         size="small"
@@ -348,6 +340,19 @@ const MyTasks = ({ refreshTrigger }) => {
                                             top: 8,
                                             right: 8,
                                             fontSize: '0.7em'
+                                        }}
+                                    />
+                                ) : (
+                                    <Chip
+                                        label="📝 SAMPLE TASK"
+                                        size="small"
+                                        color="warning"
+                                        sx={{
+                                            position: 'absolute',
+                                            top: 8,
+                                            right: 8,
+                                            fontSize: '0.7em',
+                                            fontWeight: 'bold'
                                         }}
                                     />
                                 )}
@@ -403,14 +408,25 @@ const MyTasks = ({ refreshTrigger }) => {
                             </CardContent>
 
                             <CardActions>
-                                <Button
-                                    size="small"
-                                    startIcon={<AssignmentIcon />}
-                                    onClick={() => handleAssignClick(task)}
-                                    disabled={task.status === 'completed'}
-                                >
-                                    {task.assignedTo ? 'Reassign' : 'Assign to'}
-                                </Button>
+                                {isUserCreated(task) ? (
+                                    // ✅ Kun vis assign-knapp for backend tasks (grønne)
+                                    <Button
+                                        size="small"
+                                        startIcon={<AssignmentIcon />}
+                                        onClick={() => handleAssignClick(task)}
+                                        disabled={task.status === 'completed'}
+                                    >
+                                        {task.assignedTo ? 'Reassign' : 'Assign to'}
+                                    </Button>
+                                ) : (
+                                    // ✅ Vis sample-indikator for sample tasks
+                                    <Chip
+                                        label="Sample Task"
+                                        size="small"
+                                        variant="outlined"
+                                        color="default"
+                                    />
+                                )}
                             </CardActions>
                         </Card>
                     </Grid>

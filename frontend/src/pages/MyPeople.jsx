@@ -34,20 +34,6 @@ const samplePeople = [
         lastName: "Berg",
         mail: "sofie.berg@example.com",
         rooms: ["Dormitory"]
-    },
-    {
-        phoneNo: "sample4",
-        firstName: "Simen",
-        lastName: "Nygaard",
-        mail: "simen.nygaard@example.com",
-        rooms: ["Dormitory"]
-    },
-    {
-        phoneNo: "sample5",
-        firstName: "Emma",
-        lastName: "Aas",
-        mail: "emma.aas@example.com",
-        rooms: ["Dormitory", "School"]
     }
 ];
 
@@ -150,12 +136,13 @@ const MyPeople = () => {
                             sx={{
                                 height: '100%',
                                 position: 'relative',
-                                border: isUserCreated(person) ? '2px solid #4caf50' : '1px solid #e0e0e0'
+                                border: isUserCreated(person) ? '2px solid #4caf50' : '2px solid #ff9800',
+                                backgroundColor: isUserCreated(person) ? 'white' : '#fff3e0'
                             }}
                         >
                             <CardContent sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                {/* User-created indicator */}
-                                {isUserCreated(person) && (
+                                {/* User-created vs Sample indicator */}
+                                {isUserCreated(person) ? (
                                     <Chip
                                         label="Your Person"
                                         size="small"
@@ -167,16 +154,29 @@ const MyPeople = () => {
                                             fontSize: '0.7em'
                                         }}
                                     />
+                                ) : (
+                                    <Chip
+                                        label="👤 SAMPLE PERSON"
+                                        size="small"
+                                        color="warning"
+                                        sx={{
+                                            position: 'absolute',
+                                            top: 8,
+                                            right: 8,
+                                            fontSize: '0.7em',
+                                            fontWeight: 'bold'
+                                        }}
+                                    />
                                 )}
 
                                 {/* Avatar and name */}
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mt: 1 }}>
                                     <Avatar
                                         sx={{
                                             width: 60,
                                             height: 60,
                                             mr: 2,
-                                            bgcolor: isUserCreated(person) ? '#4caf50' : '#9e9e9e'
+                                            bgcolor: isUserCreated(person) ? '#4caf50' : '#ff9800'
                                         }}
                                     >
                                         {person.profilePicture ? (
@@ -226,6 +226,15 @@ const MyPeople = () => {
                                                 Born: {new Date(person.birthDate).toLocaleDateString()}
                                             </Typography>
                                         )}
+                                    </Box>
+                                )}
+
+                                {/* Sample person note */}
+                                {!isUserCreated(person) && (
+                                    <Box sx={{ mt: 'auto', pt: 2 }}>
+                                        <Typography variant="caption" color="text.secondary">
+                                            Demo person for testing
+                                        </Typography>
                                     </Box>
                                 )}
                             </CardContent>

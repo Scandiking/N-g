@@ -6,6 +6,8 @@ package com.nag.controller;
  */
 
 import com.nag.dto.TaskForPersonDTO;
+import com.nag.model.AppUser;
+import com.nag.repository.AppUserRepository;
 import com.nag.service.TaskForPersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskForPersonController {
     private final TaskForPersonService taskForPersonService;
+    private final AppUserRepository appUserRepository;
 
     @GetMapping
     @Operation(summary = "Get all tasks for persons", description = "Retrieve a list of all tasks assigned to persons")
@@ -34,6 +38,22 @@ public class TaskForPersonController {
     })
     public ResponseEntity<List<TaskForPersonDTO>> getAllTaskForPersons() {
         return ResponseEntity.ok(taskForPersonService.getAllTaskForPersons());
+    }
+
+    @GetMapping("/my-tasks")
+    @Operation(summary = "Get tasks assigned to current user", description = "Retrieve all tasks assigned to the currently authenticated user")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved tasks for current user"),
+            @ApiResponse(responseCode = "401", description = "User not authenticated"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<TaskForPersonDTO>> getMyAssignedTasks(Authentication auth) {
+        // Get current user's phone number from authentication
+        AppUser user = appUserRepository.findByUsername(auth.getName()).orElseThrow();
+        String phoneNo = user.getPerson().getPhoneNo();
+
+        // Get tasks assigned to this user
+        return ResponseEntity.ok(taskForPersonService.getTasksForPerson(phoneNo));
     }
 
     @GetMapping("/{taskId}/{phoneNo}")
@@ -82,8 +102,6 @@ public class TaskForPersonController {
         taskForPersonService.deleteTaskForPerson(taskId, phoneNo);
         return ResponseEntity.noContent().build();
     }
-
-    // Additional useful endpoints
 
     @GetMapping("/person/{phoneNo}")
     @Operation(summary = "Get all tasks for a person", description = "Retrieve all tasks assigned to a specific person")

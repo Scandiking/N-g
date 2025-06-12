@@ -12,11 +12,29 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import { useState, useEffect } from "react";
 
-// Sample rooms with assigned user IDs (keeping original sample data)
+// Sample rooms - reduced to 3 with clear naming
 const sampleRooms = [
-    { roomId: 1, roomName: "Dormitory", roomDescr: "Student dorm of Apalveien 111", roomAdmin: "sample@example.com", members: [10, 11] },
-    { roomId: 2, roomName: "Project group", roomDescr: "Group with assignments for the APP2000 course", roomAdmin: "sample@example.com", members: [11] },
-    { roomId: 3, roomName: "Gym", roomDescr: "High-intensity interval training running group.", roomAdmin: "sample@example.com", members: [] },
+    {
+        roomId: 9001, // Changed to high ID to avoid conflicts
+        roomName: "Dormitory",
+        roomDescr: "Student dorm of Apalveien 111",
+        roomAdmin: "sample@example.com",
+        members: [10, 11]
+    },
+    {
+        roomId: 9002,
+        roomName: "Project group",
+        roomDescr: "Group with assignments for the APP2000 course",
+        roomAdmin: "sample@example.com",
+        members: [11]
+    },
+    {
+        roomId: 9003,
+        roomName: "Gym",
+        roomDescr: "High-intensity interval training running group",
+        roomAdmin: "sample@example.com",
+        members: []
+    },
 ];
 
 // List of users (for sample rooms)
@@ -32,6 +50,11 @@ function MyRooms() {
 
     // Combine sample rooms with backend rooms
     const allRooms = [...sampleRooms, ...backendRooms];
+
+    // Check if room is user-created (backend)
+    const isUserCreated = (room) => {
+        return backendRooms.some(br => br.roomId === room.roomId);
+    };
 
     // Fetch rooms from backend when component mounts
     useEffect(() => {
@@ -79,29 +102,60 @@ function MyRooms() {
                 </Container>
             ) : (
                 <>
-                    {backendRooms.length > 0 && (
-                        <Typography variant="h6" sx={{ mb: 2, color: 'success.main' }}>
-                            ✨ Your Created Rooms: {backendRooms.length}
-                        </Typography>
-                    )}
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Showing {allRooms.length} rooms ({sampleRooms.length} sample + {backendRooms.length} your rooms)
+                    </Typography>
 
                     <Grid container spacing={3}>
                         {allRooms.map((room) => (
                             <Grid item xs={12} sm={6} md={4} key={`${room.roomId}-${room.roomName}`}>
-                                <Card sx={{ p: 2, boxShadow: 3}}>
-                                    <CardContent>
-                                        <Typography variant="h6">
+                                <Card sx={{
+                                    p: 2,
+                                    boxShadow: 3,
+                                    position: 'relative',
+                                    border: isUserCreated(room) ? '2px solid #4caf50' : '2px solid #ff9800',
+                                    backgroundColor: isUserCreated(room) ? 'white' : '#fff3e0',
+                                    height: '100%',  // ✅ LA TIL: Samme høyde på alle kort
+                                    display: 'flex',
+                                    flexDirection: 'column'
+                                }}>
+                                    <CardContent sx={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        height: '100%'
+                                    }}>
+                                        {/* Room type indicator */}
+                                        {isUserCreated(room) ? (
+                                            <Chip
+                                                label="Your Room"
+                                                color="success"
+                                                size="small"
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 8,
+                                                    right: 8,
+                                                    fontSize: '0.7em'
+                                                }}
+                                            />
+                                        ) : (
+                                            <Chip
+                                                label="🏠 SAMPLE ROOM"
+                                                color="warning"
+                                                size="small"
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 8,
+                                                    right: 8,
+                                                    fontSize: '0.7em',
+                                                    fontWeight: 'bold'
+                                                }}
+                                            />
+                                        )}
+
+                                        <Typography variant="h6" sx={{ mt: 1 }}>
                                             {room.roomName}
-                                            {/* Mark user-created rooms */}
-                                            {backendRooms.some(br => br.roomId === room.roomId) && (
-                                                <Chip
-                                                    label="Your Room"
-                                                    color="success"
-                                                    size="small"
-                                                    sx={{ ml: 1 }}
-                                                />
-                                            )}
                                         </Typography>
+
                                         <Typography color="text.secondary" sx={{ mb: 2 }}>
                                             {room.roomDescr || room.description || 'No description provided'}
                                         </Typography>
@@ -132,13 +186,13 @@ function MyRooms() {
                                             ) : (
                                                 <ListItem>
                                                     <ListItemText
-                                                        primary={backendRooms.some(br => br.roomId === room.roomId)
+                                                        primary={isUserCreated(room)
                                                             ? "Loading members..."
                                                             : "No members yet"
                                                         }
-                                                        secondary={backendRooms.some(br => br.roomId === room.roomId)
+                                                        secondary={isUserCreated(room)
                                                             ? "Feature coming soon"
-                                                            : "Sample room"
+                                                            : "Demo room for testing"
                                                         }
                                                     />
                                                 </ListItem>
