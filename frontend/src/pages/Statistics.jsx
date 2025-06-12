@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardMedia, Card, CardContent, Container, Typography } from "@mui/material";
+import {CardMedia, Card, CardContent, Container, Typography} from "@mui/material";
 import DonaldDuckImage from '../assets/DonaldDuck.png';
 import DaisyDuckImage from '../assets/DaisyDuck.png';
 import MickeyMouseImage from '../assets/MickeyMouse.png';
@@ -10,38 +10,38 @@ const sampleStatistics = [
     {
         id: 1,
         title: "Most completed tasks overall",
-        description: "{User} have completed most tasks in total ever",
+        description: "Donald have completed most tasks in total ever",
         image: DonaldDuckImage,
     },
     {
         id: 2,
         title: "Fastest task completer",
-        description: "{User} have completed tasks the fastest in an average of inception",
+        description: "Dolly have completed tasks the fastest in an average of inception",
         image: DaisyDuckImage,
     },
     {
         id: 3,
         title: "Least nagged",
-        description: "Just do it. {User} gets stuff done.",
+        description: "Just do it. Mickey gets stuff done.",
         image: MickeyMouseImage,
     },
     {
         id: 4,
         title: "Most nagged",
-        description: "{User} is perhaps related to sloths. Remember sloth is a death sin.",
+        description: "Minnie is perhaps related to sloths. Remember sloth is a death sin.",
         image: MinnieMouseImage,
     },
     {
         id: 5,
         title: "Slowest task completer",
-        description: "{User} have completed tasks the slowest in an average of inception. Get with the times.",
+        description: "Goofy have completed tasks the slowest in an average of inception. Get with the times.",
         image: GoofyImage,
     },
 ];
 
 function Statistics() {
     return (
-        <Container sx={{ p: 3 }}>
+        <Container sx={{p: 3}}>
             {sampleStatistics.map(stat => (
                 <Card
                     key={stat.id}
