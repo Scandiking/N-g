@@ -113,7 +113,7 @@ const Login = () => {
 
                     <TextField
                         fullWidth
-                        label="Username"
+                        label="Email"
                         variant="outlined"
                         margin="normal"
                         value={credentials.username}

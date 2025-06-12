@@ -20,6 +20,7 @@ import lombok.Setter;
 public class Room {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // ✅ ADDED: Auto-increment fix
     @Column(name = "room_id")
     private Short roomId; // korresponderer med SMALLINT i SQL
 
@@ -40,7 +41,6 @@ public class Room {
     // @JoinColumn(name = "room_admin", insertable = false, updatable = false)
     // private Person admin;
 
-
     public Room(Short roomId, String roomName, String roomDescr, String roomAdmin, byte[] roomPicture) {
         this.roomId = roomId;
         this.roomName = roomName;
@@ -48,7 +48,6 @@ public class Room {
         this.roomAdmin = roomAdmin;
         this.roomPicture = roomPicture;
     }
-
 
     public Room(Short roomId, String roomName, String roomAdmin) {
         this.roomId = roomId;
