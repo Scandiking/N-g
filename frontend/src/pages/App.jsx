@@ -2,32 +2,34 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
-// Root-level components (one directory up)
-import Header from '../Header';
-import AddTask from '../AddTask';
-import AddPeople from '../AddPeople';
-import AddRoom from '../AddRoom';
-import MyPeople from '../MyPeople';
-import MyRooms from '../MyRooms';
-import FloatingActionButton from '../FloatingActionButton';
-
-// Page-level components (same folder)
-import Home from './Home';
+// All of these components live side-by-side in src/pages/
+import Header from './Header';
+import FloatingActionButton from './FloatingActionButton';
+import AddTask from './AddTask';
+import AddPeople from './AddPeople';
+import AddRoom from './AddRoom';
 import MyTasks from './MyTasks';
-import MyPeoplePage from './MyPeople';    // if you have a separate MyPeople.jsx here
-import MyRoomsPage from './MyRooms';      // similarly for MyRooms
+import MyPeople from './MyPeople';
+import MyRooms from './MyRooms';
+import Home from './Home';
 import Statistics from './Statistics';
 import Payments from './Payments';
 import Settings from './Settings';
 import Login from './Login';
 import Register from './Register';
-
-// Theme/context (page-level)
 import ThemeContextProvider from './ThemeContext';
 import ThemeProvider from './ThemeProvider';
 
-// MUI + Framer Motion
-import { Container, Grid, Typography, Paper, Stack, Tooltip } from '@mui/material';
+// MUI & Framer Motion
+import {
+    Container,
+    Grid,
+    Typography,
+    Paper,
+    Stack,
+    Tooltip,
+    Button
+} from '@mui/material';
 import CardMedia from '@mui/material/CardMedia';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -42,7 +44,10 @@ export default function App() {
                     <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
                     <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-                    <AppContent isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+                    <AppContent
+                        isModalOpen={isModalOpen}
+                        setIsModalOpen={setIsModalOpen}
+                    />
                 </BrowserRouter>
             </ThemeProvider>
         </ThemeContextProvider>
@@ -53,7 +58,7 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
     const location = useLocation();
     const [tasks, setTasks] = useState([]);
 
-    // fetch tasks from backend
+    // Fetch tasks once on mount
     useEffect(() => {
         (async () => {
             const token = localStorage.getItem('token');
@@ -67,7 +72,8 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
     }, []);
 
     const handleComplete = (id) => {
-        setTasks((prev) => prev.filter((t) => t.taskId !== id));
+        // Optionally also sync this change with the backend
+        setTasks(prev => prev.filter(t => t.taskId !== id));
     };
 
     return (
@@ -84,7 +90,7 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                             <AnimatePresence>
                                 {tasks.length > 0 ? (
                                     <Grid container spacing={3}>
-                                        {tasks.map((task) => (
+                                        {tasks.map(task => (
                                             <Grid item xs={12} sm={6} md={4} key={task.taskId}>
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 50 }}
@@ -123,14 +129,18 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                                                         </Typography>
                                                         <Stack direction="row" spacing={1}>
                                                             <Tooltip title="Complete task" arrow>
-                                                                <button
+                                                                <Button
+                                                                    variant="contained"
+                                                                    color="success"
                                                                     onClick={() => handleComplete(task.taskId)}
                                                                 >
                                                                     Complete task
-                                                                </button>
+                                                                </Button>
                                                             </Tooltip>
                                                             <Tooltip title="Task info" arrow>
-                                                                <button>Task info</button>
+                                                                <Button variant="outlined">
+                                                                    Task info
+                                                                </Button>
                                                             </Tooltip>
                                                         </Stack>
                                                     </Paper>
@@ -143,13 +153,16 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.5 }}
-                                        style={{ textAlign: 'center', marginTop: '50px' }}
+                                        style={{
+                                            textAlign: 'center',
+                                            marginTop: '50px',
+                                        }}
                                     >
                                         <Typography variant="h4" color="success.main">
                                             You are free!
                                         </Typography>
                                         <Typography sx={{ mt: 2 }}>
-                                            Enjoy your time - you've earned it!
+                                            Enjoy your time – you've earned it!
                                         </Typography>
                                     </motion.div>
                                 )}
@@ -157,11 +170,12 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                         </Container>
                     }
                 />
+
                 <Route path="/add-task" element={<Navigate to="/" />} />
                 <Route path="/add-people" element={<AddPeople />} />
                 <Route path="/add-room" element={<AddRoom />} />
-                <Route path="/mypeople" element={<MyPeoplePage />} />
-                <Route path="/myrooms" element={<MyRoomsPage />} />
+                <Route path="/mypeople" element={<MyPeople />} />
+                <Route path="/myrooms" element={<MyRooms />} />
                 <Route path="/mytasks" element={<MyTasks />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/payments" element={<Payments />} />
