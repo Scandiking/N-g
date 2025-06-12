@@ -65,7 +65,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) ->
                         authorizeHttpRequests
                                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/register").permitAll()  // ✅ Added register endpoint
+                                .requestMatchers(HttpMethod.POST, "/register").permitAll() // ✅ Added register endpoint
+                                .requestMatchers(HttpMethod.GET, "/api/profile").authenticated()
                                 .anyRequest().authenticated())
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling((exceptionHandling) -> exceptionHandling.authenticationEntryPoint(exceptionHandler));
