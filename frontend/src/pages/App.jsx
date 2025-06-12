@@ -1,8 +1,14 @@
-// src/pages/App.jsx
+// src/App.jsx
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    useLocation,
+    Navigate
+} from 'react-router-dom';
 
-// All of these components live side-by-side in src/pages/
+// Root‐level components
 import Header from './Header';
 import FloatingActionButton from './FloatingActionButton';
 import AddTask from './AddTask';
@@ -20,7 +26,7 @@ import Register from './Register';
 import ThemeContextProvider from './ThemeContext';
 import ThemeProvider from './ThemeProvider';
 
-// MUI & Framer Motion
+// MUI & Framer‐Motion
 import {
     Container,
     Grid,
@@ -41,8 +47,6 @@ export default function App() {
             <ThemeProvider>
                 <BrowserRouter>
                     <Header onAddTask={() => setIsModalOpen(true)} />
-                    <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
-                    <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
                     <AppContent
                         isModalOpen={isModalOpen}
@@ -58,30 +62,52 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
     const location = useLocation();
     const [tasks, setTasks] = useState([]);
 
-    // Fetch tasks once on mount
-    useEffect(() => {
-        (async () => {
+    // Centralized fetch function
+    const fetchTasks = async () => {
+        try {
             const token = localStorage.getItem('token');
-            const auth = token?.startsWith('Bearer ') ? token : `Bearer ${token}`;
+            const auth = token?.startsWith('Bearer ')
+                ? token
+                : `Bearer ${token}`;
             const res = await fetch('http://localhost:8080/api/tasks', {
                 headers: { Authorization: auth || '' },
             });
-            if (res.ok) setTasks(await res.json());
-            else console.error('Failed fetching tasks:', await res.text());
-        })();
+            if (!res.ok) throw new Error(await res.text());
+            setTasks(await res.json());
+        } catch (err) {
+            console.error('Error fetching tasks:', err);
+        }
+    };
+
+    // Fetch once on mount
+    useEffect(() => {
+        fetchTasks();
     }, []);
 
     const handleComplete = (id) => {
-        // Optionally also sync this change with the backend
-        setTasks(prev => prev.filter(t => t.taskId !== id));
+        // Optionally sync with backend…
+        setTasks((prev) => prev.filter((t) => t.taskId !== id));
     };
 
     return (
         <>
+            {/* Single FAB */}
             {location.pathname !== '/settings' && (
-                <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
+                <FloatingActionButton
+                    onAddTask={() => setIsModalOpen(true)}
+                />
             )}
 
+            {/* Single AddTask modal, always triggers a re‐fetch on close */}
+            <AddTask
+                open={isModalOpen}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    fetchTasks();
+                }}
+            />
+
+            {/* Your routes */}
             <Routes>
                 <Route
                     path="/"
@@ -90,7 +116,7 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                             <AnimatePresence>
                                 {tasks.length > 0 ? (
                                     <Grid container spacing={3}>
-                                        {tasks.map(task => (
+                                        {tasks.map((task) => (
                                             <Grid item xs={12} sm={6} md={4} key={task.taskId}>
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 50 }}
@@ -101,7 +127,6 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                                                     <Paper
                                                         sx={{
                                                             p: 3,
-                                                            height: '100%',
                                                             display: 'flex',
                                                             flexDirection: 'column',
                                                         }}
@@ -132,7 +157,9 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                                                                 <Button
                                                                     variant="contained"
                                                                     color="success"
-                                                                    onClick={() => handleComplete(task.taskId)}
+                                                                    onClick={() =>
+                                                                        handleComplete(task.taskId)
+                                                                    }
                                                                 >
                                                                     Complete task
                                                                 </Button>
@@ -153,16 +180,13 @@ function AppContent({ isModalOpen, setIsModalOpen }) {
                                         initial={{ opacity: 0, scale: 0.8 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.5 }}
-                                        style={{
-                                            textAlign: 'center',
-                                            marginTop: '50px',
-                                        }}
+                                        style={{ textAlign: 'center', marginTop: 50 }}
                                     >
                                         <Typography variant="h4" color="success.main">
                                             You are free!
                                         </Typography>
                                         <Typography sx={{ mt: 2 }}>
-                                            Enjoy your time – you've earned it!
+                                            Enjoy your time—you’ve earned it!
                                         </Typography>
                                     </motion.div>
                                 )}
