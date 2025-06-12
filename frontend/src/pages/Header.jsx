@@ -1,428 +1,257 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AppBar from '@mui/material/AppBar';
-import Badge from '@mui/material/Badge';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import AddTask from './AddTask';
-import AddPeople from './AddPeople';
-import AddRoom from './AddRoom';
-import {Avatar, Divider, ListItemIcon, Popover, SwipeableDrawer} from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
-import TaskIcon from '@mui/icons-material/Task';
-import PeopleIcon from '@mui/icons-material/People';
-import RoomIcon from '@mui/icons-material/Room';
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import SettingsIcon from '@mui/icons-material/Settings';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import {AccountCircle, Logout} from "@mui/icons-material";
-import InfoIcon from '@mui/icons-material/Info';
-import Naglogo from '../assets/Nag-logo.png'
+import { useNavigate, useLocation } from 'react-router-dom';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    Box,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    IconButton,
+    Avatar,
+    Menu,
+    MenuItem,
+    Divider
+} from '@mui/material';
+import {
+    Menu as MenuIcon,
+    People as PeopleIcon,
+    Home as HomeIcon,
+    Assessment as AssessmentIcon,
+    Payment as PaymentIcon,
+    Settings as SettingsIcon,
+    Task as TaskIcon,
+    MeetingRoom as RoomIcon,
+    Logout
+} from '@mui/icons-material';
+import { useAuth } from './AuthContext';
 
-// import Statistics from './Statistics';
-// import Settings from './Settings';
-
-const Header = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [popoverAnchorEl, setPopoverAnchorEl] = useState(null);
-    const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
-    const [isAddPeopleModalOpen, setIsAddPeopleModalOpen] = useState(false);
-    const [isAddRoomsModalOpen, setIsAddRoomsModalOpen] = useState(false);
-    const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+const Header = ({ onAddTask }) => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { user, isAuthenticated, logout, loading } = useAuth();
 
-    // Function to toggle the drawer state
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleUserMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleUserMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        handleUserMenuClose();
+        logout();
+    };
+
+    const menuItems = [
+        { text: 'Home', icon: <HomeIcon />, path: '/' },
+        { text: 'My Tasks', icon: <TaskIcon />, path: '/mytasks' },
+        { text: 'My People', icon: <PeopleIcon />, path: '/mypeople' },
+        { text: 'My Rooms', icon: <RoomIcon />, path: '/myrooms' },
+        { text: 'Add People', icon: <PeopleIcon />, path: '/add-people' },
+        { text: 'Add Room', icon: <RoomIcon />, path: '/add-room' },
+        { text: 'Statistics', icon: <AssessmentIcon />, path: '/statistics' },
+        { text: 'Payments', icon: <PaymentIcon />, path: '/payments' },
+        { text: 'Settings', icon: <SettingsIcon />, path: '/settings' }
+    ];
+
     const toggleDrawer = (open) => (event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
             return;
         }
-        setIsDrawerOpen(open);
+        setDrawerOpen(open);
     };
 
-    // Popover handlers
-    const handleAvatarClick = (event) => {
-        setPopoverAnchorEl(event.currentTarget);
+    const handleMenuClick = (path) => {
+        navigate(path);
+        setDrawerOpen(false);
     };
 
-    const handlePopoverClose = () => {
-        setPopoverAnchorEl(null);
-    };
-
-    const isPopoverOpen = Boolean(popoverAnchorEl);
-
-    const toggleAddTaskModal = (open) => {
-        setIsAddTaskModalOpen(open);
-    };
-
-    const toggleAddPeopleModal = (open) => {
-        setIsAddPeopleModalOpen(open);
+    // Don't show header on login/register pages
+    if (location.pathname === '/login' || location.pathname === '/register') {
+        return null;
     }
 
-    const toggleAddRoomsModal = (open) => {
-        setIsAddRoomsModalOpen(open);
-    }
+    // Helper function to get user display name
+    const getUserDisplayName = () => {
+        if (!user) return '';
 
-    const toggleSettingsModal = (open) => {
-        setIsSettingsModalOpen(open);
-    }
+        if (user.person && (user.person.firstName || user.person.lastName)) {
+            return `${user.person.firstName || ''} ${user.person.lastName || ''}`.trim();
+        }
+
+        return user.username || user.email || '';
+    };
+
+    // Helper function to get user initials for avatar
+    const getUserInitials = () => {
+        if (!user) return '?';
+
+        if (user.person && user.person.firstName && user.person.lastName) {
+            return `${user.person.firstName.charAt(0)}${user.person.lastName.charAt(0)}`.toUpperCase();
+        }
+
+        if (user.username) {
+            return user.username.charAt(0).toUpperCase();
+        }
+
+        if (user.email) {
+            return user.email.charAt(0).toUpperCase();
+        }
+
+        return '?';
+    };
 
     return (
         <>
-            <AppBar position="fixed">
+            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="start"
+                        onClick={toggleDrawer(true)}
+                        sx={{ mr: 2 }}
+                    >
                         <MenuIcon />
                     </IconButton>
 
-                    <img
-                        src={Naglogo}
-                        alt="trk"
-                        style={{ height: 40 }}
-                    />
-                    {/* Avatar with popover */}
-                    <Avatar
-                        alt="Fornavn Etternavn"
-                        src="https://th.bing.com/th/id/R.3d3fb5d7fd683782784cb712de8d8c71?rik=eWBkaFbes%2fMRDQ&riu=http%3a%2f%2fclipart-library.com%2fimages_k%2fsmiley-face-png-transparent%2fsmiley-face-png-transparent-21.png&ehk=iSLreF%2fX7uU5Her%2fa5Z4Nej%2baPAjy2i5OR23iEGjOSY%3d&risl=&pid=ImgRaw&r=0"
-                        onClick={handleAvatarClick}
-                        sx={{cursor: 'pointer', marginLeft:"auto" }}
-                    />
+                    <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{ flexGrow: 1, cursor: 'pointer' }}
+                        onClick={() => navigate('/')}
+                    >
+                        NAG Task Manager
+                    </Typography>
+
+                    {/* User info section */}
+                    {isAuthenticated && !loading && user ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box sx={{ display: { xs: 'none', sm: 'block' }, textAlign: 'right' }}>
+                                <Typography variant="body2" sx={{ lineHeight: 1.2 }}>
+                                    {getUserDisplayName()}
+                                </Typography>
+                                <Typography variant="caption" color="inherit" sx={{ opacity: 0.8 }}>
+                                    {user.email}
+                                </Typography>
+                            </Box>
+
+                            <IconButton
+                                color="inherit"
+                                onClick={handleUserMenuOpen}
+                                sx={{ ml: 1 }}
+                            >
+                                <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.dark' }}>
+                                    {getUserInitials()}
+                                </Avatar>
+                            </IconButton>
+                        </Box>
+                    ) : loading ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="body2">Loading...</Typography>
+                        </Box>
+                    ) : (
+                        <Button color="inherit" onClick={() => navigate('/login')}>
+                            Login
+                        </Button>
+                    )}
                 </Toolbar>
             </AppBar>
 
-            {/* Popover for avatar */}
-            <Popover
-                open={isPopoverOpen}
-                anchorEl={popoverAnchorEl}
-                onClose={handlePopoverClose}
-                anchorOrigin={{
-                    vertical:'bottom',
-                    horizontal: 'right'
+            {/* User menu dropdown */}
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleUserMenuClose}
+                onClick={handleUserMenuClose}
+                PaperProps={{
+                    elevation: 3,
+                    sx: {
+                        overflow: 'visible',
+                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                        mt: 1.5,
+                        minWidth: 200,
+                        '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                        },
+                    },
                 }}
+                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <Box sx={{ padding: '10px', width: '250px' }}>
-                    { /* USER INFO*/ }
-                    <Typography variant="subtitle1" fontweight="bold">
-                        Fornavn Etternavn
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                        name_surname@example.com
-                    </Typography>
-                    <Divider sx={{ my: 1}} />
+                {user && (
+                    <MenuItem disabled sx={{ flexDirection: 'column', alignItems: 'flex-start', py: 1.5 }}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
+                            {getUserDisplayName()}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {user.email}
+                        </Typography>
+                        {user.person?.phoneNo && (
+                            <Typography variant="caption" color="text.secondary">
+                                {user.person.phoneNo}
+                            </Typography>
+                        )}
+                    </MenuItem>
+                )}
+                <Divider />
+                <MenuItem onClick={() => navigate('/settings')}>
+                    <ListItemIcon>
+                        <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Settings
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                        <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                </MenuItem>
+            </Menu>
 
-                    {/* OPTIONS LIST */}
+            {/* Sidebar Drawer */}
+            <Drawer
+                anchor="left"
+                open={drawerOpen}
+                onClose={toggleDrawer(false)}
+            >
+                <Toolbar /> {/* Spacer for AppBar */}
+                <Box
+                    sx={{ width: 250 }}
+                    role="presentation"
+                    onClick={toggleDrawer(false)}
+                    onKeyDown={toggleDrawer(false)}
+                >
                     <List>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate('/profile')}>
-                                <ListItemIcon>
-                                    <AccountCircle/>
-                                </ListItemIcon>
-                                <ListItemText primary="My account" />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate('/Settings')}>
-                                <ListItemIcon>
-                                    <SettingsIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Settings" />
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate('TaskInfo')}>
-                                <ListItemIcon>
-                                    <InfoIcon/>
-                                </ListItemIcon>
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate('Login')}>
-                                <ListItemIcon>
-                                    <Logout/>
-                                </ListItemIcon>
-                                <ListItemText primary="Log out" />
-                            </ListItemButton>
-                        </ListItem>
+                        {menuItems.map((item) => (
+                            <ListItem key={item.text} disablePadding>
+                                <ListItemButton
+                                    onClick={() => handleMenuClick(item.path)}
+                                    selected={location.pathname === item.path}
+                                >
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.text} />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
                     </List>
                 </Box>
-
-            </Popover>
-
-
-
-
-            {/* This box creates space equal to the AppBar height */}
-            {/* Trenger denne boksen for at kortene ikke skal havne under app-baren */}
-            <Box sx={{ marginTop: '64px' }}> {/*Adjust the marginTop value if needed*/}</Box>
-
-            { /* Dette er sideskuffen med manipulering */ }
-            <SwipeableDrawer
-                swipeAreaWidth={10}
-                anchor="left"
-                open={isDrawerOpen}
-                onClose={toggleDrawer(false)}
-                onOpen={toggleDrawer(true)}>
-
-                {/* I sideskuffen er det en liste med valg*/}
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick = {() => {
-                                setIsDrawerOpen(false);
-                                navigate("/");
-                            }}
-                        >
-                            <ListItemIcon>
-                                <HomeIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Home"/>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <Divider/>
-
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                toggleAddTaskModal(true);
-                                console.log('Add Task Modal open', isAddTaskModalOpen);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <Badge
-                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                    badgeContent={"+"}
-                                >
-                                    <TaskIcon />
-                                </Badge>
-                            </ListItemIcon>
-                            <ListItemText primary="Add tasks" />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                toggleAddPeopleModal(true);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <Badge
-                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                    badgeContent={"+"}
-                                >
-                                    <PeopleIcon/>
-                                </Badge>
-                            </ListItemIcon>
-                            <ListItemText primary="Add people" />
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={ () => {
-                                setIsDrawerOpen(false);
-                                toggleAddRoomsModal(true);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <Badge
-                                    anchorOrigin={{ vertical:"top",horizontal:"right" }}
-                                    badgeContent={"+"}
-                                >
-                                    <RoomIcon/>
-                                </Badge>
-                            </ListItemIcon>
-                            <ListItemText primary="Add room"/>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <Divider/>
-
-                    {/* TASKS */}
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                navigate('/mytasks');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <TaskIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="My tasks" />
-                        </ListItemButton>
-                    </ListItem>
-
-                    {/* PEOPLE */}
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                navigate('/mypeople');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <PeopleIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="My people" />
-                        </ListItemButton>
-                    </ListItem>
-
-                    {/* ROOMS */}
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                navigate('/myrooms');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <RoomIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="My rooms" />
-                        </ListItemButton>
-                    </ListItem>
-
-                    <Divider/>
-
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                console.log('Statistics clicked');
-                                navigate('/statistics');
-                                // Add nagivation or additional functionality here}
-                            }}
-                        >
-                            <ListItemIcon>
-                                <LeaderboardIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Statistics"/>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                console.log('Betalinger');
-                                navigate('/payments');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <PaymentsIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Payments"/>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                                navigate('/settings');
-                            }}
-                        >
-                            <ListItemIcon>
-                                <SettingsIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary="Settings" />
-                        </ListItemButton>
-                    </ListItem>
-
-                </List>
-            </SwipeableDrawer>
-
-
-            { /* MODAL-VALG */}
-            { /* Legg til oppgave */}
-            <Modal
-                open={isAddTaskModalOpen}
-                onClose={() => toggleAddTaskModal(false)}
-                aria-labelledby="add-task-modal"
-                aria-describedby="add-task-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        p: 4,
-                        borderRadius: 8
-                    }}
-                >
-                    <AddTask />
-                </Box>
-            </Modal>
-
-            <Modal
-                // Legg til folk
-                open={isAddPeopleModalOpen}
-                onClose={() => toggleAddPeopleModal(false)}
-                aria-labelledby="add-people-modal"
-                aria-describedby="add-people-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        p: 4
-                    }}
-                >
-                    <AddPeople />
-                </Box>
-            </Modal>
-
-            <Modal
-                // Legg til rom
-                open={isAddRoomsModalOpen}
-                onClose = {() => toggleAddRoomsModal(false)}
-                aria-labelledby = "add-rooms-modal"
-                aria-describedby="add-rooms-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        p: 4
-                    }}
-                >
-                    <AddRoom />
-                </Box>
-            </Modal>
-
-            <Modal
-                // Settings
-                open={isSettingsModalOpen}
-                onClose = {() => toggleSettingsModal(false)}
-                aria-labelledby = "settings-modal"
-                aria-describedby="settings-modal-description"
-            >
-                <List>
-                    <ListItem>
-                        <ListItemText>
-                            hehe
-                        </ListItemText>
-                    </ListItem>
-                </List>
-            </Modal>
+            </Drawer>
         </>
     );
 };

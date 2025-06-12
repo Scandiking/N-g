@@ -1,107 +1,124 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
-    Card,
-    CardContent,
-    Box,
     Container,
-    Stack,
-    Button,
+    Paper,
     TextField,
+    Button,
+    Typography,
+    Box,
     Alert,
-    CircularProgress,
-    Typography
+    Link,
+    CircularProgress
 } from '@mui/material';
-import Naglogo from "../assets/Naeg-logo-2.png";
+import { useAuth } from './AuthContext';
 
 const Login = () => {
-    const [credentials, setCredentials] = useState({ username: '', password: '' });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login, isAuthenticated, loading } = useAuth();
 
-    const handleChange = (field) => (event) => {
-        setCredentials({ ...credentials, [field]: event.target.value });
-        setError(''); // Clear error when user starts typing
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    });
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated && !loading) {
+            navigate('/');
+        }
+    }, [isAuthenticated, loading, navigate]);
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+        // Clear error when user starts typing
+        if (error) setError('');
     };
 
-    const handleLogin = async () => {
-        if (!credentials.username.trim() || !credentials.password.trim()) {
-            setError('Please enter both username and password');
-            return;
-        }
-
-        setLoading(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setError('');
+        setIsLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8080/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: credentials.username.trim(),
-                    password: credentials.password.trim()
-                })
-            });
+            const result = await login(formData.email, formData.password);
 
-            if (response.ok) {
-                const data = await response.json();
-
-                // Store JWT token in localStorage
-                if (data.token) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('username', credentials.username);
-
-                    console.log('Login successful:', data);
-
-                    // Redirect to home page
-                    navigate('/');
-                } else {
-                    setError('Login successful but no token received');
-                }
+            if (result.success) {
+                // AuthContext will handle the redirect via useEffect above
+                console.log('Login successful');
             } else {
-                // Handle different error status codes
-                if (response.status === 401) {
-                    setError('Invalid username or password');
-                } else if (response.status === 403) {
-                    setError('Access forbidden');
-                } else {
-                    const errorText = await response.text();
-                    setError(`Login failed: ${errorText || 'Unknown error'}`);
-                }
+                setError(result.error || 'Login failed');
             }
         } catch (error) {
             console.error('Login error:', error);
-            setError('Network error. Please check if the server is running.');
+            setError('An unexpected error occurred');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
-    const handleKeyPress = (event) => {
-        if (event.key === 'Enter') {
-            handleLogin();
-        }
-    };
+    // Show loading spinner while checking authentication
+    if (loading) {
+        return (
+            <Container component="main" maxWidth="sm">
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <CircularProgress />
+                    <Typography sx={{ mt: 2 }}>Checking authentication...</Typography>
+                </Box>
+            </Container>
+        );
+    }
 
     return (
-        <Container style={{ textAlign: 'center', marginTop: '100px' }}>
-            <Typography variant="h3" gutterBottom>
-                Welcome to Næg
-            </Typography>
-            <Typography variant="h6" color="textSecondary" gutterBottom>
-                Join the like five people who uses this app
-            </Typography>
+        <Container component="main" maxWidth="sm">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                {/* Logo */}
+                <Box
+                    sx={{
+                        width: 120,
+                        height: 120,
+                        background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+                        borderRadius: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 3,
+                        boxShadow: '0 4px 20px rgba(33, 150, 243, 0.3)'
+                    }}
+                >
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontFamily: 'monospace'
+                        }}
+                    >
+                        N
+                    </Typography>
+                </Box>
 
-            <Box sx={{ mb: 3 }}>
-                <img src={Naglogo} alt="Næg logo" style={{ height: 250, padding: '10px' }} />
-            </Box>
-
-            <Card sx={{ maxWidth: 400, mx: 'auto', mt: 3 }}>
-                <CardContent sx={{ p: 4 }}>
-                    <Typography variant="h5" gutterBottom>
+                <Paper elevation={3} sx={{ padding: 4, width: '100%', maxWidth: 400 }}>
+                    <Typography component="h1" variant="h4" align="center" gutterBottom>
                         Sign In
                     </Typography>
 
@@ -111,57 +128,73 @@ const Login = () => {
                         </Alert>
                     )}
 
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        variant="outlined"
-                        margin="normal"
-                        value={credentials.username}
-                        onChange={handleChange('username')}
-                        onKeyPress={handleKeyPress}
-                        disabled={loading}
-                        autoComplete="username"
-                    />
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email"
+                            name="email"
+                            autoComplete="email"
+                            autoFocus
+                            value={formData.email}
+                            onChange={handleChange}
+                            disabled={isLoading}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            disabled={isLoading}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? <CircularProgress size={24} /> : 'SIGN IN'}
+                        </Button>
 
-                    <TextField
-                        fullWidth
-                        label="Password"
-                        type="password"
-                        variant="outlined"
-                        margin="normal"
-                        value={credentials.password}
-                        onChange={handleChange('password')}
-                        onKeyPress={handleKeyPress}
-                        disabled={loading}
-                        autoComplete="current-password"
-                    />
-
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        size="large"
-                        onClick={handleLogin}
-                        disabled={loading || !credentials.username.trim() || !credentials.password.trim()}
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        {loading ? <CircularProgress size={24} /> : 'Sign In'}
-                    </Button>
-
-                    <Box sx={{ mt: 2, p: 2, backgroundColor: 'grey.100', borderRadius: 1 }}>
-                        <Typography variant="body2" color="textSecondary">
-                            <strong>Test Accounts:</strong><br />
-                            Username: <code>user</code> Password: <code>user</code><br />
-                            Username: <code>admin</code> Password: <code>admin</code>
-                        </Typography>
+                        <Box textAlign="center">
+                            <Link component={RouterLink} to="/register" variant="body2">
+                                Don't have an account? Sign up
+                            </Link>
+                        </Box>
                     </Box>
-                </CardContent>
-            </Card>
+                </Paper>
 
-            <Stack spacing={2} direction="row" justifyContent="center" sx={{ mt: 3 }}>
-                <Button variant="outlined" size="large" onClick={() => navigate('/register')}>
-                    Don't have an account? Register
-                </Button>
-            </Stack>
+                {/* Test accounts info */}
+                <Paper
+                    elevation={1}
+                    sx={{
+                        mt: 3,
+                        p: 2,
+                        backgroundColor: 'grey.50',
+                        width: '100%',
+                        maxWidth: 400
+                    }}
+                >
+                    <Typography variant="subtitle2" align="center" gutterBottom>
+                        Test Accounts:
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                        Username: <strong>user</strong> Password: <strong>user</strong>
+                    </Typography>
+                    <Typography variant="body2" align="center">
+                        Username: <strong>admin</strong> Password: <strong>admin</strong>
+                    </Typography>
+                </Paper>
+            </Box>
         </Container>
     );
 };
