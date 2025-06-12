@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import {Navigate} from 'react-router-dom';
-
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 // Import av egne komponenter
 import Header from './Header';
 import AddTask from './AddTask';
 import AddPeople from "./AddPeople";
 import AddRoom from "./AddRoom";
-import MyTasks from "./MyTasks";
+import MyTasks from "./pages/MyTasks";
 import MyPeople from "./MyPeople";
 import MyRooms from "./MyRooms";
 import Statistics from "./Statistics";
@@ -16,6 +14,7 @@ import Payments from "./Payments";
 import Settings from "./Settings";
 import Login from './Login';
 import Register from './Register';
+import Home from "./Home";
 
 // Komponenter fra MUI framework
 import { Grid, Container, Typography, Button, Paper, Stack, Tooltip } from '@mui/material';
@@ -26,143 +25,110 @@ import CardMedia from '@mui/material/CardMedia';
 import ThemeContextProvider from "./ThemeContext";
 import ThemeProvider from './ThemeProvider';
 
-// For UX appearing swifter and more responsive to user by adding visual responses in form of animations
+// For UX appearing swifter and more responsive
 import { motion, AnimatePresence } from "framer-motion";
 
-import Home from "./Home";
-
-
-/*
-sampleTasks er listen med eksempeloppgaver du ser på landingssiden.
- */
-//Test fra Mia
-const sampleTasks = [
-    {
-        id: 1,
-        title: 'Støvsuge kjøkkenet',
-        description: 'Fjern smuler og hundehår osv.'
-    },
-    {
-        id: 2,
-        title: 'Ta ut søpla',
-        description: 'Kyllingemballasje lukter guffent fort. Må fjernes. Restavfall, matavfall, papp/papir.'
-    },
-    {
-        id: 3,
-        title: 'Vaske speilet',
-        description: 'Speilet er fullt av tannkrem(?) igjen'
-    },
-    {
-        id: 4,
-        title: 'Ta ut av oppvaskmaskinen',
-        description: 'Det er rent, skapene er tomme for asjetter og glass'
-    },
-    {
-        id: 5,
-        title:'Sette inn i oppvaskmaskinen',
-        description:'Benken er full av skitne glass og tallerkner'
-    },
-];
-
-function AppContent() {
+function AppContent({ isModalOpen, setIsModalOpen }) {
     const location = useLocation();
-    const [tasks, setTasks] = useState(sampleTasks);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // landing‐page tasks (optional: you can replace this with a fetch from /api/tasks too)
+    const [tasks, setTasks] = useState([]);
+
+    // fetch real tasks on mount
+    React.useEffect(() => {
+        const fetchTasks = async () => {
+            const token = localStorage.getItem('token');
+            const auth = token?.startsWith('Bearer ') ? token : `Bearer ${token}`;
+            const res = await fetch('http://localhost:8080/api/tasks', {
+                headers: { 'Authorization': auth || '' }
+            });
+            if (res.ok) {
+                setTasks(await res.json());
+            }
+        };
+        fetchTasks();
+    }, []);
 
     const handleComplete = (id) => {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+        setTasks((prev) => prev.filter((t) => t.taskId !== id));
     };
-
-
 
     return (
         <>
-            {/* floating action button triggers modal */}
             {location.pathname !== '/settings' && (
                 <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
             )}
 
-            {/*AddTask Modal (now managed globally) */}
             <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
             <Routes>
                 <Route path="/" element={
-
-
-                        <Container sx={{ p: 3 }}>
-
-                                <AnimatePresence>
-                                    {tasks.length > 0 ? (
-                                        <Grid container spacing={3}>
-                                            {tasks.map((task) => (
-                                                <Grid item xs={12} sm={6} md={4} key={task.id}>
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 50 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        exit={{ opacity: 0, y: -50 }}
-                                                        transition={{ duration: 0.3 }}
-                                                    >
-                                                        <Paper sx={{ p: 3, height: "100%", display:'flex', flexDirection:'column', justifyContent: 'start' }} elevation={3}>
-                                                            <Typography variant="h6" component="div" gutterBottom>
-                                                                <Tooltip title="Tittelen på oppgaven" placement="top" arrow>
-                                                                    {task.title}
-                                                                </Tooltip>
-                                                            </Typography>
-
-                                                            <CardMedia
-                                                                component="img"
-                                                                sx={{height:"100%", backgroundColor:"grey.200", borderRadius: 2, mb: 2}}
-                                                                title="Picture"
-                                                            />
-
-                                                            <Typography variant="body1" component="p" sx={{ mb: 2 }}>
-                                                                <Tooltip title="Utfyllende om oppgaven" placement="top" arrow>
-                                                                    {task.description}
-                                                                </Tooltip>
-                                                            </Typography>
-
-                                                            <Stack spacing={2} direction="row">
-                                                                <Tooltip title="Gjør oppgaven og trykk her for å slippe næggingen" placement="top" arrow>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        color="success"
-                                                                        onClick={() => handleComplete(task.id)}
-                                                                    >
-                                                                        Complete task
-                                                                    </Button>
-                                                                </Tooltip>
-                                                                <Tooltip title="Data om data. Hvem er oppgaven fra? Når lagde den?" placement="top" arrow>
-                                                                    <Button variant="outlined">Task info</Button>
-                                                                </Tooltip>
-                                                            </Stack>
-                                                        </Paper>
-                                                    </motion.div>
-                                                </Grid>
-                                            ))}
+                    <Container sx={{ p: 3 }}>
+                        <AnimatePresence>
+                            {tasks.length > 0 ? (
+                                <Grid container spacing={3}>
+                                    {tasks.map((task) => (
+                                        <Grid item xs={12} sm={6} md={4} key={task.taskId}>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -50 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <Paper sx={{ p: 3, height: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'start' }} elevation={3}>
+                                                    <Typography variant="h6" gutterBottom>
+                                                        <Tooltip title="Tittelen på oppgaven" arrow>
+                                                            {task.title}
+                                                        </Tooltip>
+                                                    </Typography>
+                                                    <CardMedia
+                                                        component="img"
+                                                        sx={{ height: 140, backgroundColor: "grey.200", borderRadius: 2, mb: 2 }}
+                                                        title="Picture"
+                                                    />
+                                                    <Typography variant="body1" sx={{ mb: 2 }}>
+                                                        <Tooltip title="Utfyllende om oppgaven" arrow>
+                                                            {task.description}
+                                                        </Tooltip>
+                                                    </Typography>
+                                                    <Stack direction="row" spacing={1}>
+                                                        <Tooltip title="Gjør oppgaven og trykk her" arrow>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="success"
+                                                                onClick={() => handleComplete(task.taskId)}
+                                                            >
+                                                                Complete task
+                                                            </Button>
+                                                        </Tooltip>
+                                                        <Tooltip title="Task info" arrow>
+                                                            <Button variant="outlined">Task info</Button>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </Paper>
+                                            </motion.div>
                                         </Grid>
-                                    ) : (
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ duration: 0.5 }}
-                                            style={{
-                                                textAlign: 'center',
-                                                marginTop: '50px',
-                                            }}
-                                        >
-                                            <Typography variant="h4" component="div" color="success.main">
-                                                You are free!
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ mt: 2 }}>
-                                                Enjoy your time - you've earned it!
-                                            </Typography>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                    style={{ textAlign: 'center', marginTop: '50px' }}
+                                >
+                                    <Typography variant="h4" color="success.main">
+                                        You are free!
+                                    </Typography>
+                                    <Typography sx={{ mt: 2 }}>
+                                        Enjoy your time - you've earned it!
+                                    </Typography>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </Container>
-
                 } />
 
-                {/* Routes (for sidebar) to take you to the components */}
                 <Route path="/add-task" element={<Navigate to="/" />} />
                 <Route path="/add-people" element={<AddPeople />} />
                 <Route path="/add-room" element={<AddRoom />} />
@@ -184,15 +150,11 @@ function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
-        <ThemeContextProvider> {/* Provides theme state (light/dark/auto) */}
-            <ThemeProvider> {/* Applies Material UI theme based on theme context */}
+        <ThemeContextProvider>
+            <ThemeProvider>
                 <BrowserRouter>
                     <Header onAddTask={() => setIsModalOpen(true)} />
-                    <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
-
-                    <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
                     <AppContent isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
-
                 </BrowserRouter>
             </ThemeProvider>
         </ThemeContextProvider>
