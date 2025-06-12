@@ -23,7 +23,8 @@ import { LocalizationProvider, DatePicker, TimeClock } from '@mui/x-date-pickers
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from 'dayjs';
 
-const AddTask = ({ open, onClose }) => {
+// ✅ NY: La til onTaskCreated prop
+const AddTask = ({ open, onClose, onTaskCreated }) => {
     const [taskTitle, setTaskTitle] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
     const [notificationType, setNotificationType] = useState("1");
@@ -158,25 +159,41 @@ const AddTask = ({ open, onClose }) => {
             const createdTask = await taskResponse.json();
             console.log('Task created:', createdTask);
 
-            // If a specific person is selected (not "Everyone in room"), assign task to person
-            if (selectedPerson !== 'Everyone in room') {
-                const personPhoneNo = typeof selectedPerson === 'object'
-                    ? selectedPerson.phoneNo
-                    : selectedPerson;
+            // ✅ FLYTT: Kall callback-funksjonen rett etter opprettelse
+            onTaskCreated?.();
+            console.log('Task created callback triggered - task will appear in MyTasks');
 
-                await assignTaskToPerson(createdTask.taskId, personPhoneNo);
-            } else if (selectedRoom && selectedPerson === 'Everyone in room') {
-                // Assign task to everyone in the selected room
-                await assignTaskToRoom(createdTask.taskId, selectedRoom);
+            // Try to assign task to person/room (this can fail without affecting the task creation)
+            try {
+                if (selectedPerson !== 'Everyone in room') {
+                    const personPhoneNo = typeof selectedPerson === 'object'
+                        ? selectedPerson.phoneNo
+                        : selectedPerson;
+
+                    await assignTaskToPerson(createdTask.taskId, personPhoneNo);
+                    console.log('Task assignment successful');
+                } else if (selectedRoom && selectedPerson === 'Everyone in room') {
+                    // Assign task to everyone in the selected room
+                    await assignTaskToRoom(createdTask.taskId, selectedRoom);
+                    console.log('Room assignment successful');
+                }
+
+                setSnackbar({
+                    open: true,
+                    message: 'Task created and assigned successfully!',
+                    severity: 'success'
+                });
+            } catch (assignError) {
+                console.warn('Assignment failed, but task was created:', assignError);
+                setSnackbar({
+                    open: true,
+                    message: 'Task created successfully! (Assignment failed - you can assign it later)',
+                    severity: 'warning'
+                });
             }
 
-            // Reset form on success
+            // Reset form and close dialog
             resetForm();
-            setSnackbar({
-                open: true,
-                message: 'Task created and assigned successfully!',
-                severity: 'success'
-            });
             onClose();
 
         } catch (error) {

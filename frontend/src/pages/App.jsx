@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Navigate} from 'react-router-dom';
 
-
 // Import av egne komponenter
 import Header from './Header';
 import AddTask from './AddTask';
@@ -30,7 +29,6 @@ import ThemeProvider from './ThemeProvider';
 import { motion, AnimatePresence } from "framer-motion";
 
 import Home from "./Home";
-
 
 /*
 sampleTasks er listen med eksempeloppgaver du ser på landingssiden.
@@ -69,11 +67,18 @@ function AppContent() {
     const [tasks, setTasks] = useState(sampleTasks);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // ✅ NY: State for å trigge refresh av MyTasks
+    const [tasksRefreshTrigger, setTasksRefreshTrigger] = useState(0);
+
     const handleComplete = (id) => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
     };
 
-
+    // ✅ NY: Funksjon som kalles når en ny task er opprettet
+    const handleTaskCreated = () => {
+        console.log('New task created, triggering refresh...');
+        setTasksRefreshTrigger(prev => prev + 1);
+    };
 
     return (
         <>
@@ -82,93 +87,94 @@ function AppContent() {
                 <FloatingActionButton onAddTask={() => setIsModalOpen(true)} />
             )}
 
-            {/*AddTask Modal (now managed globally) */}
-            <AddTask open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            {/*AddTask Modal (now managed globally) - ✅ NY: La til onTaskCreated prop */}
+            <AddTask
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onTaskCreated={handleTaskCreated}
+            />
+
             <Routes>
                 <Route path="/" element={
+                    <Container sx={{ p: 3 }}>
+                        <AnimatePresence>
+                            {tasks.length > 0 ? (
+                                <Grid container spacing={3}>
+                                    {tasks.map((task) => (
+                                        <Grid item xs={12} sm={6} md={4} key={task.id}>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 50 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -50 }}
+                                                transition={{ duration: 0.3 }}
+                                            >
+                                                <Paper sx={{ p: 3, height: "100%", display:'flex', flexDirection:'column', justifyContent: 'start' }} elevation={3}>
+                                                    <Typography variant="h6" component="div" gutterBottom>
+                                                        <Tooltip title="Tittelen på oppgaven" placement="top" arrow>
+                                                            {task.title}
+                                                        </Tooltip>
+                                                    </Typography>
 
+                                                    <CardMedia
+                                                        component="img"
+                                                        sx={{height:"100%", backgroundColor:"grey.200", borderRadius: 2, mb: 2}}
+                                                        title="Picture"
+                                                    />
 
-                        <Container sx={{ p: 3 }}>
+                                                    <Typography variant="body1" component="p" sx={{ mb: 2 }}>
+                                                        <Tooltip title="Utfyllende om oppgaven" placement="top" arrow>
+                                                            {task.description}
+                                                        </Tooltip>
+                                                    </Typography>
 
-                                <AnimatePresence>
-                                    {tasks.length > 0 ? (
-                                        <Grid container spacing={3}>
-                                            {tasks.map((task) => (
-                                                <Grid item xs={12} sm={6} md={4} key={task.id}>
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: 50 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        exit={{ opacity: 0, y: -50 }}
-                                                        transition={{ duration: 0.3 }}
-                                                    >
-                                                        <Paper sx={{ p: 3, height: "100%", display:'flex', flexDirection:'column', justifyContent: 'start' }} elevation={3}>
-                                                            <Typography variant="h6" component="div" gutterBottom>
-                                                                <Tooltip title="Tittelen på oppgaven" placement="top" arrow>
-                                                                    {task.title}
-                                                                </Tooltip>
-                                                            </Typography>
-
-                                                            <CardMedia
-                                                                component="img"
-                                                                sx={{height:"100%", backgroundColor:"grey.200", borderRadius: 2, mb: 2}}
-                                                                title="Picture"
-                                                            />
-
-                                                            <Typography variant="body1" component="p" sx={{ mb: 2 }}>
-                                                                <Tooltip title="Utfyllende om oppgaven" placement="top" arrow>
-                                                                    {task.description}
-                                                                </Tooltip>
-                                                            </Typography>
-
-                                                            <Stack spacing={2} direction="row">
-                                                                <Tooltip title="Gjør oppgaven og trykk her for å slippe næggingen" placement="top" arrow>
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        color="success"
-                                                                        onClick={() => handleComplete(task.id)}
-                                                                    >
-                                                                        Complete task
-                                                                    </Button>
-                                                                </Tooltip>
-                                                                <Tooltip title="Data om data. Hvem er oppgaven fra? Når lagde den?" placement="top" arrow>
-                                                                    <Button variant="outlined">Task info</Button>
-                                                                </Tooltip>
-                                                            </Stack>
-                                                        </Paper>
-                                                    </motion.div>
-                                                </Grid>
-                                            ))}
+                                                    <Stack spacing={2} direction="row">
+                                                        <Tooltip title="Gjør oppgaven og trykk her for å slippe næggingen" placement="top" arrow>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="success"
+                                                                onClick={() => handleComplete(task.id)}
+                                                            >
+                                                                Complete task
+                                                            </Button>
+                                                        </Tooltip>
+                                                        <Tooltip title="Data om data. Hvem er oppgaven fra? Når lagde den?" placement="top" arrow>
+                                                            <Button variant="outlined">Task info</Button>
+                                                        </Tooltip>
+                                                    </Stack>
+                                                </Paper>
+                                            </motion.div>
                                         </Grid>
-                                    ) : (
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ duration: 0.5 }}
-                                            style={{
-                                                textAlign: 'center',
-                                                marginTop: '50px',
-                                            }}
-                                        >
-                                            <Typography variant="h4" component="div" color="success.main">
-                                                You are free!
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ mt: 2 }}>
-                                                Enjoy your time - you've earned it!
-                                            </Typography>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                                    ))}
+                                </Grid>
+                            ) : (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                    style={{
+                                        textAlign: 'center',
+                                        marginTop: '50px',
+                                    }}
+                                >
+                                    <Typography variant="h4" component="div" color="success.main">
+                                        You are free!
+                                    </Typography>
+                                    <Typography variant="body1" sx={{ mt: 2 }}>
+                                        Enjoy your time - you've earned it!
+                                    </Typography>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </Container>
-
                 } />
 
-                {/* Routes (for sidebar) to take you to the components */}
+                {/* Routes (for sidebar) to take you to the components - ✅ NY: La til refreshTrigger prop */}
                 <Route path="/add-task" element={<Navigate to="/" />} />
                 <Route path="/add-people" element={<AddPeople />} />
                 <Route path="/add-room" element={<AddRoom />} />
                 <Route path="/mypeople" element={<MyPeople />} />
                 <Route path="/myrooms" element={<MyRooms />} />
-                <Route path="/mytasks" element={<MyTasks />} />
+                <Route path="/mytasks" element={<MyTasks refreshTrigger={tasksRefreshTrigger} />} />
                 <Route path="/statistics" element={<Statistics />} />
                 <Route path="/payments" element={<Payments />} />
                 <Route path="/settings" element={<Settings />} />

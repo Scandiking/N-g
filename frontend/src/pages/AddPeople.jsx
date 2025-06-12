@@ -17,6 +17,13 @@ import {
     Autocomplete
 } from '@mui/material';
 
+// Sample rooms for dropdown (matching MyRooms pattern)
+const sampleRooms = [
+    { roomId: 1, roomName: "Dormitory" },
+    { roomId: 2, roomName: "Project group" },
+    { roomId: 3, roomName: "Gym" },
+];
+
 const AddPeople = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -24,40 +31,52 @@ const AddPeople = () => {
     const [email, setEmail] = useState('');
     const [selectedRoom, setSelectedRoom] = useState('');
     const [loading, setLoading] = useState(false);
-    const [rooms, setRooms] = useState([]);
+    const [backendRooms, setBackendRooms] = useState([]); // ✅ Renamed for clarity
     const [snackbar, setSnackbar] = useState({
         open: false,
         message: '',
         severity: 'success'
     });
 
+    // Combine sample rooms with backend rooms
+    const allRooms = [...sampleRooms, ...backendRooms];
+
     // Fetch available rooms when component mounts
     useEffect(() => {
+        console.log('AddPeople useEffect: Fetching rooms...');
         fetchRooms();
     }, []);
 
     const fetchRooms = async () => {
         try {
             const token = localStorage.getItem('token');
+            console.log('Fetching rooms with token:', token ? 'Token exists' : 'No token');
+
+            let authHeader = '';
+            if (token) {
+                authHeader = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+            }
+
             const response = await fetch('http://localhost:8080/api/rooms', {
                 headers: {
-                    'Authorization': token && !token.startsWith('Bearer ')
-                        ? `Bearer ${token}`
-                        : token || ''
+                    'Authorization': authHeader,
+                    'Content-Type': 'application/json'
                 }
             });
 
+            console.log('Rooms API response status:', response.status);
+
             if (response.ok) {
                 const roomData = await response.json();
-                setRooms(roomData);
+                console.log('Backend rooms data received:', roomData);
+                setBackendRooms(roomData); // ✅ Updated to use backendRooms
+            } else {
+                console.warn('Failed to fetch backend rooms:', response.status, response.statusText);
+                // Don't show error - just use sample rooms
             }
         } catch (error) {
-            console.error('Error fetching rooms:', error);
-            setSnackbar({
-                open: true,
-                message: 'Failed to load rooms',
-                severity: 'warning'
-            });
+            console.error('Error fetching backend rooms:', error);
+            // Don't show error - just use sample rooms
         }
     };
 
@@ -174,6 +193,10 @@ const AddPeople = () => {
         setSnackbar({ ...snackbar, open: false });
     };
 
+    // Debug logging
+    console.log('AddPeople render - allRooms:', allRooms);
+    console.log('AddPeople render - sample rooms:', sampleRooms.length, 'backend rooms:', backendRooms.length);
+
     return (
         <>
             <Paper elevation={4} sx={{padding: 4, margin: '40px auto', maxWidth: 600}}>
@@ -234,11 +257,22 @@ const AddPeople = () => {
 
                     <Tooltip title="Assign person to a room (optional)" placement="top">
                         <Autocomplete
-                            options={rooms}
-                            getOptionLabel={(option) => option.roomName || option}
-                            value={selectedRoom}
+                            options={allRooms}
+                            getOptionLabel={(option) => {
+                                // Handle different object structures
+                                if (typeof option === 'string') return option;
+                                if (option.roomName) return option.roomName;
+                                if (option.name) return option.name;
+                                return `Room ${option.roomId || option}`;
+                            }}
+                            value={allRooms.find(room => room.roomId === selectedRoom) || null}
                             onChange={(event, newValue) => {
-                                setSelectedRoom(newValue?.roomId || newValue || '');
+                                console.log('Room selected:', newValue);
+                                if (newValue) {
+                                    setSelectedRoom(newValue.roomId || newValue);
+                                } else {
+                                    setSelectedRoom('');
+                                }
                             }}
                             disabled={loading}
                             renderInput={(params) => (
@@ -246,8 +280,30 @@ const AddPeople = () => {
                                     {...params}
                                     label="Assign to room"
                                     placeholder="Select a room (optional)"
+                                    helperText={`${allRooms.length} room(s) available (${sampleRooms.length} sample + ${backendRooms.length} your rooms)`}
                                 />
                             )}
+                            renderOption={(props, option) => (
+                                <li {...props}>
+                                    <span>
+                                        {option.roomName || option.name || option}
+                                        {/* Mark user-created rooms */}
+                                        {backendRooms.some(br => br.roomId === option.roomId) && (
+                                            <span style={{
+                                                marginLeft: '8px',
+                                                padding: '2px 6px',
+                                                backgroundColor: '#4caf50',
+                                                color: 'white',
+                                                borderRadius: '4px',
+                                                fontSize: '0.7em'
+                                            }}>
+                                                Your Room
+                                            </span>
+                                        )}
+                                    </span>
+                                </li>
+                            )}
+                            noOptionsText="No rooms found"
                         />
                     </Tooltip>
 
