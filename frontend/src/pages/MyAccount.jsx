@@ -21,7 +21,7 @@ const MyAccount = () => {
                 return;
             }
 
-            const response = await fetch("api/profile", {
+            const response = await fetch("http://localhost:8080/api/profile", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,

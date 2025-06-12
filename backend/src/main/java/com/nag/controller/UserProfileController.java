@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-public class ProfileController {
+public class UserProfileController {
     private final AppUserRepository appUserRepository;
 
-    public ProfileController(AppUserRepository appUserRepository) {
+    public UserProfileController(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
     }
 
