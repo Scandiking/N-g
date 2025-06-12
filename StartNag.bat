@@ -15,44 +15,61 @@ echo  ^|   ^|                              ^|   ^|
 echo  ^|___^|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^|___^|
 echo (_____)                            (_____)
 echo.
-echo Starting Næg frontend...
+echo Starting Næg...
 echo.
 
-:: Navigate to the directory where the .bat file is located
-cd /d "%~dp0frontend"
-
-:: Check if the directory change was successful
+:: Navigate to backend directory (Maven project root)
+echo Starting Maven backend...
+cd /d "%~dp0backend"
 if errorlevel 1 (
-    echo Error: Could not navigate to the frontend directory.
-    echo Make sure the path is correct and the repository is cloned properly.
+    echo Error: Could not navigate to backend directory.
+    echo Expected path: %~dp0backend
     pause
     exit /b 1
 )
 
-:: Debugging: Confirm current directory
-echo Current directory: %cd%
+echo Current backend directory: %cd%
 
-:: Start the React app
+:: Check if pom.xml exists
+if not exist "pom.xml" (
+    echo Error: pom.xml not found. Make sure you're in the Maven project root.
+    echo Current directory: %cd%
+    pause
+    exit /b 1
+)
+
+:: Start Maven Spring Boot application in background
+echo Running Maven Spring Boot application...
+start "Backend Server" mvn spring-boot:run
+
+:: Wait for backend to start up
+echo Backend starting... waiting 10 seconds for Spring Boot initialization
+timeout /t 10 /nobreak >nul
+
+:: Navigate to frontend directory
+echo Starting frontend...
+cd /d "%~dp0frontend"
+if errorlevel 1 (
+    echo Error: Could not navigate to frontend directory.
+    echo Expected path: %~dp0frontend
+    pause
+    exit /b 1
+)
+
+echo Current frontend directory: %cd%
+
+:: Check if package.json exists
+if not exist "package.json" (
+    echo Error: package.json not found. Make sure you're in the React project root.
+    echo Current directory: %cd%
+    pause
+    exit /b 1
+)
+
 echo Running npm start...
 npm start
-echo Ran npm start...
 
-:: Check if npm start failed
-if errorlevel 1 (
-    echo Error: Failed to start the React app.
-    echo Ensure Node.js and npm are installed and the dependencies are properly installed.
-    pause
-    exit /b 1
-)
-
-
-:: Keep the terminal open after successful execution
+:: Keep terminal open if npm start exits
 echo.
-echo Næg frontend started successfully.
-type "%~dp0frontend\pikachu.txt"
-echo.
-
-
-
-
+echo Frontend process ended.
 pause
