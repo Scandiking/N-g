@@ -29,6 +29,7 @@ import {
     MeetingRoom as RoomIcon,
     Logout
 } from '@mui/icons-material';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { useAuth } from './AuthContext';
 
 const Header = ({ onAddTask }) => {
@@ -208,6 +209,12 @@ const Header = ({ onAddTask }) => {
                     </MenuItem>
                 )}
                 <Divider />
+                <MenuItem onClick={() => navigate('/profile')}>
+                    <ListItemIcon>
+                        <AccountBoxIcon fontSize="small" />
+                    </ListItemIcon>
+                    My account
+                </MenuItem>
                 <MenuItem onClick={() => navigate('/settings')}>
                     <ListItemIcon>
                         <SettingsIcon fontSize="small" />
@@ -236,6 +243,7 @@ const Header = ({ onAddTask }) => {
                     onKeyDown={toggleDrawer(false)}
                 >
                     <List>
+
                         {menuItems.map((item) => (
                             <ListItem key={item.text} disablePadding>
                                 <ListItemButton

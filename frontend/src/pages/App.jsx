@@ -30,6 +30,7 @@ import { AuthProvider } from './AuthContext';
 import { motion, AnimatePresence } from "framer-motion";
 
 import Home from "./Home";
+import MyAccount from "./MyAccount";
 
 /*
 sampleTasks er listen med eksempeloppgaver du ser på landingssiden.
@@ -386,6 +387,7 @@ function AppContent() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/home" element={<Home />} />
+                    <Route path="/profile" element={<MyAccount />} />
                 </Routes>
             </Container>
         </Box>
